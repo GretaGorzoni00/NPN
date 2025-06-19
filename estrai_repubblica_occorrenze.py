@@ -1,4 +1,5 @@
 import pandas as pd
+import tqdm
 
 def estrai_token_e_tag(path):
     frasi = []
@@ -28,7 +29,7 @@ if __name__ == "__main__":
     preposizioni ={}
     count = 0
     chiave = 'SES'
-    for frase in frasi:
+    for frase in tqdm.tqdm(frasi):
         for i in range(len(frase)-2):
             costruzione = frase[i][1] + frase[i+1][1] + frase[i+2][1]
             if costruzione == chiave:
