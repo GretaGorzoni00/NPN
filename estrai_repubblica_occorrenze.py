@@ -72,8 +72,8 @@ if __name__ == "__main__":
                         preposizioni[preposizione][nome] = 1
 
                     # Debug opzionale
-                    print(frase[i][0] + " " + frase[i+1][0] + " " + frase[i+2][0])
-                    print(frase)
+                    # print(frase[i][0] + " " + frase[i+1][0] + " " + frase[i+2][0])
+                    # print(frase)
                     count += 1
 
     tutti_nomi = set()
