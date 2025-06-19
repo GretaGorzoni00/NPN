@@ -4,7 +4,7 @@ import tqdm
 def estrai_token_e_tag(path):
     frasi = []
     with open(path, encoding='utf-8') as f:
-        for riga in f:
+        for riga in tqdm.tqdm(f):
             riga = riga.strip()
             if riga.startswith("<"):
                 if riga == "<s>":
