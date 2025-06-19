@@ -1,6 +1,26 @@
 import pandas as pd
 import tqdm
 
+def estrai_token_e_tag_gen(path):
+    # frasi = []
+    with open(path, encoding='utf-8') as f:
+        for riga in tqdm.tqdm(f):
+            riga = riga.strip()
+            if riga.startswith("<"):
+                if riga == "<s>":
+                    frase_corrente = []
+                if riga == "</s>":
+                    yield frase_corrente
+                    # frasi.append(frase_corrente)
+            else:
+                colonne = riga.split('\t')
+                if len(colonne) >= 4:
+                    token = colonne[1]
+                    pos = colonne[3]
+                    pos_spec = colonne[4]
+                    frase_corrente.append((token,pos,pos_spec))
+    # return frasi
+
 def estrai_token_e_tag(path):
     frasi = []
     with open(path, encoding='utf-8') as f:
@@ -24,7 +44,8 @@ if __name__ == "__main__":
     import sys
 
     percorso = sys.argv[1]
-    frasi = estrai_token_e_tag(percorso)
+    # frasi = estrai_token_e_tag(percorso)
+    frasi = estrai_token_e_tag_gen(percorso)
 
     preposizioni ={}
     count = 0
