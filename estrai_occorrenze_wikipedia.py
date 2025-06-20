@@ -7,7 +7,7 @@ def estrai_token_e_tag_gen(path):
     with open(path, encoding='utf-8') as f:
         for riga in tqdm.tqdm(f):
             riga = riga.strip()
-            if riga.startswith("1 "):
+            if riga.startswith("1 ") or riga.startswith("<"):
                 frase_corrente = []
                 
             if riga == "":
@@ -101,6 +101,6 @@ if __name__ == "__main__":
         data.append(row)
 
     df = pd.DataFrame(data)
-    df.to_csv('occorrenze_preposizioni.csv', index=False)
+    df.to_csv('occorrenze_preposizioni_wikipedia.csv', index=False)
 
     print("File CSV creato con successo!")
