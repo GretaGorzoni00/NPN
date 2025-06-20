@@ -7,19 +7,19 @@ def estrai_token_e_tag_gen(path):
     with open(path, encoding='utf-8') as f:
         for riga in tqdm.tqdm(f):
             riga = riga.strip()
-            if riga.startswith("<"):
-                if riga == "<s>":
-                    frase_corrente = []
-                if riga == "</s>":
+            if riga.startswith("1"):
+                frase_corrente = []
+                
+                if not riga:
                     yield frase_corrente
                     # frasi.append(frase_corrente)
-            else:
-                colonne = riga.split('\t')
-                if len(colonne) >= 4:
-                    token = colonne[1]
-                    pos = colonne[3]
-                    pos_spec = colonne[4]
-                    frase_corrente.append((token,pos,pos_spec))
+                else:
+                    colonne = riga.split('\t')
+                    if len(colonne) >= 4:
+                        token = colonne[1]
+                        pos = colonne[3]
+                        pos_spec = colonne[4]
+                        frase_corrente.append((token,pos,pos_spec))
     # return frasi
 
 def estrai_token_e_tag(path):
@@ -62,7 +62,6 @@ if __name__ == "__main__":
             if costruzione == chiave:
                 if frase[i][0] == frase[i+2][0] and frase[i+1][2] == 'E':
                     print(f"{frase[i][0]} {frase[i+1][0]} {frase[i+2][0]}\t{' '.join([el[0] for el in frase])}", file =file_output)
-                    print("File CSV creato con successo!")
                     preposizione = frase[i+1][0]
                     nome = frase[i][0]
 
@@ -102,6 +101,6 @@ if __name__ == "__main__":
         data.append(row)
 
     df = pd.DataFrame(data)
-    df.to_csv('occorrenze_preposizioni_rep.csv', index=False)
+    df.to_csv('occorrenze_preposizioni.csv', index=False)
 
     print("File CSV creato con successo!")
