@@ -46,6 +46,10 @@ if __name__ == "__main__":
     percorsi = sys.argv[1:]
 
     for percorso in percorsi: #perchè il corpus è diviso in più file?
+        
+        nome_file = os.path.basename(percorso)
+        output_occorrenze = "output_occorrenze" + nome_file + ".txt"
+        file_output = open(output_occorrenze, "w")
 
         frasi = estrai_token_e_tag_gen(percorso)
 
@@ -57,8 +61,7 @@ if __name__ == "__main__":
                 costruzione = frase[i][1] + frase[i+1][1] + frase[i+2][1]
                 if costruzione == chiave:
                     if frase[i][0] == frase[i+2][0]:
-                        # print(frase[i][0] + " " + frase[i+1][0] +  " " + frase[i+2][0])
-                        # print(frase)
+                        print(f"{frase[i][0]} {frase[i+1][0]} {frase[i+2][0]}\t{' '.join([el[0] for el in frase])}", file =file_output)
                         preposizione = frase[i+1][0]
                         nome = frase[i][0]
                         
@@ -96,7 +99,6 @@ if __name__ == "__main__":
             data.append(row)
 
         df = pd.DataFrame(data)
-        nome_file = os.path.basename(percorso)
         output_name = 'occorrenze_' + nome_file + '.csv'
         df.to_csv(output_name, index=False)
 
