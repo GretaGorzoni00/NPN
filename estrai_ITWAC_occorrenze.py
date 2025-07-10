@@ -14,10 +14,11 @@ def estrai_token_e_tag_gen(path):
                     yield frase_corrente
             else:
                 colonne = riga.split('\t')
-                if len(colonne) >= 2:
+                if len(colonne) >= 3:
                     token = colonne[0]
                     pos = colonne[1]
-                    frase_corrente.append((token,pos))
+                    lemma = colonne[2]
+                    frase_corrente.append((token,pos,lemma))
 
 
 def estrai_token_e_tag(path):
@@ -32,10 +33,11 @@ def estrai_token_e_tag(path):
                     frasi.append(frase_corrente)
             else:
                 colonne = riga.split('\t')
-                if len(colonne) >= 2:
+                if len(colonne) >= 3:
                     token = colonne[0]
                     pos = colonne[1]
-                    frase_corrente.append((token,pos))
+                    lemma = colonne[2]
+                    frase_corrente.append((token,pos,lemma))
     return frasi
 
 
@@ -50,6 +52,9 @@ if __name__ == "__main__":
         nome_file = os.path.basename(percorso)
         output_occorrenze = "output_occorrenze" + nome_file + ".txt"
         file_output = open(output_occorrenze, "w")
+        
+        output_distrattori = "output_esclusi_" + nome_file + ".txt"
+        file_esclusi = open(output_distrattori, "w")
 
         frasi = estrai_token_e_tag_gen(percorso)
 
@@ -61,25 +66,28 @@ if __name__ == "__main__":
                 costruzione = frase[i][1] + frase[i+1][1] + frase[i+2][1]
                 if costruzione == chiave:
                     if frase[i][0] == frase[i+2][0]:
-                        print(f"{frase[i][0]} {frase[i+1][0]} {frase[i+2][0]}\t{' '.join([el[0] for el in frase])}", file =file_output)
-                        preposizione = frase[i+1][0]
-                        nome = frase[i][0]
-                        
-                            # Se la preposizione non è ancora nel dizionario
-                        if preposizione not in preposizioni:
-                            preposizioni[preposizione] = {'occorrenze': 0}
-                        
-                                            # Incrementa occorrenze totali
-                        preposizioni[preposizione]['occorrenze'] += 1
-
-                        # Incrementa contatore del nome
-                        if nome in preposizioni[preposizione]:
-                            preposizioni[preposizione][nome] += 1
+                        if i > 0 and frase[i-1][1] == 'PRE':
+                            print(f"ESCLUSO: {frase[i-1][0]} {frase[i][0]} {frase[i+1][0]} {frase[i+2][0]}\t{frase[i][2]}\t{' '.join([el[0] for el in frase])}", file=file_esclusi)
                         else:
-                            preposizioni[preposizione][nome] = 1
+                            print(f"{frase[i][0]} {frase[i+1][0]} {frase[i+2][0]}\t{frase[i][2]}\t{' '.join([el[0] for el in frase])}", file =file_output)
+                            preposizione = frase[i+1][0]
+                            nome = frase[i][0]
                         
-                        count += 1
-        print(percorso, count)
+                                # Se la preposizione non è ancora nel dizionario
+                            if preposizione not in preposizioni:
+                                preposizioni[preposizione] = {'occorrenze': 0}
+                            
+                                                # Incrementa occorrenze totali
+                            preposizioni[preposizione]['occorrenze'] += 1
+
+                            # Incrementa contatore del nome
+                            if nome in preposizioni[preposizione]:
+                                preposizioni[preposizione][nome] += 1
+                            else:
+                                preposizioni[preposizione][nome] = 1
+                            
+                            count += 1
+            print(percorso, count)
         
         tutti_nomi = set()
         for info in preposizioni.values():
