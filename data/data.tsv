@@ -1,0 +1,14 @@
+construction	costruzione	preposizione	parola	contesto_pre	costr	contesto_post	number_of_noun	meaning	syntactic_function
+no	bit a bit	a	bit	L 'operazione viene eseguita	bit a bit	,ovvero tra le coppie di bit corrispondenti nei due operandi.	sg	succession/iteration/distributivity	modifier
+no	bit a bit	a	bit	Esegue l 'operazione di OR	bit a bit	tra i due operandio specificati,ponendo il risultato nel secondo.	sg	succession/iteration/distributivity	modifier
+no	bit a bit	a	bit	ndo il risultato nel secondo . EOR . s : esegue l ' operazione di OR esclusivo	bit a bit	tra i due operandi specificato,ponendo il risultato nel secondo . NOT . s : d	sg	succession/iteration/distributivity	modifier
+yes	bit a bit	a	bit	È compito di quest 'ultimo trasmettere,	bit a bit	,l 'informazione sul cavo e quindi al destinatario.	sg	succession/iteration/distributivity	modifier
+yes	bit a bit	a	bit	in datagram Controlla il flusso delle informazioni Fisico Trasmette i datagram	bit a bit	Realizza lo scambio delle informazioni Tabella 6 Livelli di comunicazione del m	sg	succession/iteration/distributivity	modifier
+yes	bocca a bocca	a	bocca	La respirazione	bocca a bocca	.	sg	juxtaposition/contact	modifier
+yes	bocca a bocca	a	bocca	Alcune tecniche di rianimazione,come per esempio la respirazione	bocca a bocca	,possono risultare pericolose per il soccorritore: in questo modo si possono trasmettere molte malattie,soprattutto se l'infortunato ha delle perdite di sangue.	sg	juxtaposition/contact	modifier
+yes	bocca a bocca	a	bocca	La respirazione artificiale andrebbe fatta attraverso l ' apposito pallone ambu,che evita il contatto	bocca a bocca	,ed è più efficace perché immette aria dall' ambiente o ricca di ossigeno invece che aria già respirata e ricca di anidride carbonica.	sg	juxtaposition/contact	modifier
+yes	bocca a bocca	a	bocca	In ogni caso,chi compie la respirazione	bocca a bocca	lo fa a suo rischio e pericolo.	sg	juxtaposition/contact	modifier
+yes	bocca a bocca	a	bocca	Allo stesso modo,la respirazione	bocca a bocca	,serve per ossigenare il sangue che viene pompato in modo meccanico attraverso il massaggio cardiaco.	sg	juxtaposition/contact	modifier
+yes	bocca a bocca	a	bocca	A questo punto bisogna procedere all 'iperestensione del capo e prepararsi all 'insufflazione	bocca a bocca	.	sg	juxtaposition/contact	modifier
+yes	bocca a bocca	a	bocca	La respirazione artificiale andrebbe praticata attraverso strumenti medicali come il pallone ambu e,per motivi di igiene e profilassi,è sconsigliabile praticare la respirazione	bocca a bocca	.	sg	juxtaposition/contact	modifier
+yes	bocca a bocca	a	bocca	Respirazione	bocca a bocca	.	sg	juxtaposition/contact	modifier
