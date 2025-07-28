@@ -1,2 +1,6 @@
 pandas
 tqdm
+transformers
+torch
+numpy
+scikitlearn
