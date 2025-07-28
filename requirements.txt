@@ -3,4 +3,4 @@ tqdm
 transformers
 torch
 numpy
-scikitlearn
+scikit-learn
