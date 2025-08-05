@@ -42,7 +42,7 @@ def processa_file(input_file):
         f.write(testo_processato)
 
 
-input_file = "data/data_set/concordance_01.tsv"
+input_file = "data/estrazione_coris/concordance_03.tsv"
 
 
 processa_file(input_file)
