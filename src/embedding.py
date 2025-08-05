@@ -34,7 +34,7 @@ def main(model_id, prefix, tokenizer_path, input_dataset, output_path):
 	for _, line in text.iterrows():
 	
 		lemma1, prep, lemma2 = line["costr"].strip().split(" ")
-		vec_constr = lemma1 + " [MASK] " + lemma2
+		vec_constr = lemma1 + " [UNK] " + lemma2
 		sentence = line["contesto_pre"] + " " + vec_constr + " " + line["contesto_post"]
 	#itera su ogni riga del data set ricomponendo la frase con la costruzione modificata UNK
 	
@@ -50,8 +50,9 @@ def main(model_id, prefix, tokenizer_path, input_dataset, output_path):
 			#print(len(outputs.hidden_states))
 		#outputs: contiene logits e tutti gli hidden_states (cioè i vettori di ogni token in ogni layer)
 	#		inputs["input_ids"][0].tolist().index(tokenizer.mask_token_id)
-			target_id = inputs["input_ids"][0].tolist().index(104)
-		#Converte la sequenza input_ids in una lista e cerca l’indice in cui compare il token [UNK] (assunto avere ID 50280)
+			target_id = inputs["input_ids"][0].tolist().index(101)
+		#Converte la sequenza input_ids in una lista e cerca l’indice in cui compare il token [UNK] (assunto avere ID 50280) per ModernBERT
+		# MASK 104 per BERT
 			#print(sentence)
 			#print(target_id)
 			predicted_token_id = outputs.logits[0, target_id].argmax(axis=-1)
@@ -75,6 +76,23 @@ def main(model_id, prefix, tokenizer_path, input_dataset, output_path):
 	# === SALVA COME .pkl ===
 	df = pd.DataFrame(results)
 	df.to_pickle(f"{output_path}/{prefix}_embedding_layers_UNK.pkl")
+	print("file pkl salvato")
+ 
+ 
+	# === SALVA COME .csv (ogni layer in colonne separate) ===
+	rows = []
+	for row in results:
+		row_data = {"costruzione": row["costruzione"]}
+		for layer_idx, layer_emb in enumerate(row["embeddings"], start=1):
+			for dim_idx, value in enumerate(layer_emb):
+				col_name = f"layer_{layer_idx}_dim_{dim_idx}"
+				row_data[col_name] = value
+		rows.append(row_data)
+
+	df_csv = pd.DataFrame(rows)
+	df_csv.to_csv(f"{output_path}/{prefix}_embedding_layers_UNK.csv", index=False)
+	print("file csv salvato")
+
 
 
 if __name__ == "__main__":
