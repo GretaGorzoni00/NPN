@@ -6,7 +6,7 @@ import argparse
 import sys
 
 def main(model_id, prefix, tokenizer_path, input_dataset, output_path):
-		
+
 	tokenizer = AutoTokenizer.from_pretrained(model_id)
 	model = AutoModelForMaskedLM.from_pretrained(model_id, output_hidden_states = True)
 	#AutoModelForMaskedLM carica il modello per il task di Masked Language Modeling
@@ -32,21 +32,42 @@ def main(model_id, prefix, tokenizer_path, input_dataset, output_path):
 	results = []
 
 	for _, line in text.iterrows():
-	
+
 		lemma1, prep, lemma2 = line["costr"].strip().split(" ")
 		vec_constr = lemma1 + " [UNK] " + lemma2
 		sentence = line["contesto_pre"] + " " + vec_constr + " " + line["contesto_post"]
-	#itera su ogni riga del data set ricomponendo la frase con la costruzione modificata UNK
-	
+		sentence_orig = line["contesto_pre"] + " " + line["costr"] + " " + line["contesto_post"]
+
+		posizione_preposizione = len(lemma1) + len([x for x in line["contesto_pre"] if not x == " "])
+		# sentence_orig_nospace = [x for x in  line["contesto_pre"] if not x == " "] + [x for x in  line["costr"] if not x == " "]
+		# print("\n\n")
+		# print(''.join(sentence_orig_nospace))
+		# print(sentence_orig_nospace[posizione_preposizione])
+		# input()
+
+		#itera su ogni riga del data set ricomponendo la frase con la costruzione modificata UNK
 		inputs = tokenizer(sentence, return_tensors="pt")
-	#Converte la frase in ID tokenizzati, creando tensori PyTorch
-	
-	
-	
+		inputs_orig = tokenizer(sentence_orig, return_tensors="pt")
+		print(sentence_orig)
+		tokens = tokenizer.tokenize(sentence_orig)
+
+		tot_caratteri = 0
+		i = 0
+		while i<len(tokens) and tot_caratteri<posizione_preposizione:
+			print(tokens[i])
+			curr_chars = len([x for x in tokens[i] if not x == "#"])
+			tot_caratteri += curr_chars
+			i+=1
+
+		print("Trovata preposizione", tokens[i], "in posizione", i, "con id", inputs_orig["input_ids"][0].tolist()[i+1])
+		input()
+		#Converte la frase in ID tokenizzati, creando tensori PyTorch
+
 		embeddings_list = []
 		with torch.no_grad():
 		#disattiva il tracciamento dei gradienti (risparmia memoria, utile in inference)
 			outputs = model(**inputs)
+			output_orig = model(**inputs_orig)
 			#print(len(outputs.hidden_states))
 		#outputs: contiene logits e tutti gli hidden_states (cioè i vettori di ogni token in ogni layer)
 	#		inputs["input_ids"][0].tolist().index(tokenizer.mask_token_id)
@@ -61,11 +82,12 @@ def main(model_id, prefix, tokenizer_path, input_dataset, output_path):
 
 			for layer in range(1, 13):
 				#ho stampato print(len(outputs.hidden_states)) = 23
-				#primo layer 
+				#primo layer
 				embeddings = outputs.hidden_states[layer]
 				target_embedding = embeddings[0, target_id, :].numpy()
+				target_embedding_prep = embeddings[0, i+1, :].numpy()
 				embeddings_list.append(target_embedding)
-	
+
 				#print(embeddings_list)
 
 			results.append({
@@ -77,8 +99,8 @@ def main(model_id, prefix, tokenizer_path, input_dataset, output_path):
 	df = pd.DataFrame(results)
 	df.to_pickle(f"{output_path}/{prefix}_embedding_layers_UNK.pkl")
 	print("file pkl salvato")
- 
- 
+
+
 	# === SALVA COME .csv (ogni layer in colonne separate) ===
 	rows = []
 	for row in results:
@@ -97,7 +119,7 @@ def main(model_id, prefix, tokenizer_path, input_dataset, output_path):
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
-	
+
 	parser.add_argument("-m", "--model", default = "DeepMount00/ModernBERT-base-ita")
 	parser.add_argument("--prefix", default ="MB")
 	parser.add_argument("-t", "--tokenizer_path", default = "data/tokenizer")
