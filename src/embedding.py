@@ -34,6 +34,8 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 	
 	for label, text in [("train", text_train), ("test", text_test)]:
 		for _, line in text.iterrows():
+      
+			predicted_tokens = []
 
 			lemma1, prep, lemma2 = line["costr"].strip().split(" ")
 			vec_constr = lemma1 + " [UNK] " + lemma2
@@ -84,8 +86,15 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 				#print(target_id)
 				predicted_token_id = output_prediction.logits[0, target_id_prediction].argmax(axis=-1)
 				predicted_token = tokenizer.decode(predicted_token_id)
-				print("Predicted token:", predicted_token, sentence_prediction)
-				input()
+				#print("Predicted token:", predicted_token, sentence_prediction)
+				#input()
+    
+				predicted_tokens.append(predicted_token)
+				text["pred_" + prefix] = predicted_tokens
+
+				# salva lo stesso file CSV con la nuova colonna
+				text.to_csv(train_dataset if label=="train" else test_dataset, sep=";", index=False)
+				print(f"Colonna predizioni aggiunta al file {label}")
 
 				for layer in range(1, 13):
 					#ho stampato print(len(outputs.hidden_states)) = 23
