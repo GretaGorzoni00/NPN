@@ -4,6 +4,7 @@ import torch
 import numpy as np
 import argparse
 import sys
+import os
 
 def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_path):
 
@@ -33,10 +34,12 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 	results = []
 	
 	for label, text in [("train", text_train), ("test", text_test)]:
+     
+		predicted_tokens = []
 		for _, line in text.iterrows():
       
-			predicted_tokens = []
-
+			tokens = line["costr"].strip().split(" ")   
+   
 			lemma1, prep, lemma2 = line["costr"].strip().split(" ")
 			vec_constr = lemma1 + " [UNK] " + lemma2
 			sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
@@ -54,13 +57,13 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 			inputs = tokenizer(sentence, return_tensors="pt")
 			inputs_orig = tokenizer(sentence_orig, return_tensors="pt")
 			inputs_prediction = tokenizer(sentence_prediction, return_tensors="pt")
-			print(sentence_orig)
+			#print(sentence_orig)
 			tokens = tokenizer.tokenize(sentence_orig)
 
 			tot_caratteri = 0
 			i = 0
 			while i<len(tokens) and tot_caratteri<posizione_preposizione:
-				print(tokens[i])
+				#print(tokens[i])
 				curr_chars = len([x for x in tokens[i] if not x == "#"])
 				tot_caratteri += curr_chars
 				i+=1
@@ -90,12 +93,8 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 				#input()
     
 				predicted_tokens.append(predicted_token)
-				text["pred_" + prefix] = predicted_tokens
-
-				# salva lo stesso file CSV con la nuova colonna
-				text.to_csv(train_dataset if label=="train" else test_dataset, sep=";", index=False)
-				print(f"Colonna predizioni aggiunta al file {label}")
-
+    
+    
 				for layer in range(1, 13):
 					#ho stampato print(len(outputs.hidden_states)) = 23
 					#primo layer
@@ -110,26 +109,39 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 				"costruzione": line["costr"],
 				"embeddings": embeddings_list  # lista di 22 array di dimensione 768
 				})
+    
+    
+		text["pred_" + prefix] = predicted_tokens
 
-			# === SALVA COME .pkl ===
-			df = pd.DataFrame(results)
-			df.to_pickle(f"{output_path}/{prefix}_embedding_layers_{label}.pkl")
-			print("file pkl salvato")
+		# salva lo stesso file CSV con la nuova colonna
+		output_csv_file = os.path.join(
+    		output_path, 
+    		os.path.basename((train_dataset if label=="train" else test_dataset)).replace(".csv", "_pred.csv")
+		)		
+
+		text.to_csv(output_csv_file, sep=";", index=False)
+		print(f"Colonna predizioni aggiunta al file duplicato: {output_csv_file}")
 
 
-			# === SALVA COME .csv (ogni layer in colonne separate) ===
-			rows = []
-			for row in results:
-				row_data = {"costruzione": row["costruzione"]}
-				for layer_idx, layer_emb in enumerate(row["embeddings"], start=1):
-					for dim_idx, value in enumerate(layer_emb):
-						col_name = f"layer_{layer_idx}_dim_{dim_idx}"
-						row_data[col_name] = value
-				rows.append(row_data) 
+		# === SALVA COME .pkl ===
+		df = pd.DataFrame(results)
+		df.to_pickle(f"{output_path}/{prefix}_embedding_layers_{label}.pkl")
+		print("file pkl salvato")
 
-			df_csv = pd.DataFrame(rows)
-			df_csv.to_csv(f"{output_path}/{prefix}_embedding_layers_{label}.csv", index=False)
-			print("file csv salvato")
+
+		# === SALVA COME .csv (ogni layer in colonne separate) ===
+		rows = []
+		for row in results:
+			row_data = {"costruzione": row["costruzione"]}
+			for layer_idx, layer_emb in enumerate(row["embeddings"], start=1):
+				for dim_idx, value in enumerate(layer_emb):
+					col_name = f"layer_{layer_idx}_dim_{dim_idx}"
+					row_data[col_name] = value
+			rows.append(row_data) 
+
+		df_csv = pd.DataFrame(rows)
+		df_csv.to_csv(f"{output_path}/{prefix}_embedding_layers_{label}.csv", index=False)
+		print("file csv salvato")
 
 
 if __name__ == "__main__":
