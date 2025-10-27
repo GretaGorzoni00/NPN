@@ -16,9 +16,8 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 		for row in results:
 			row_data = {"ID": row["ID"], "costruzione": row["costruzione"]}
 			for layer_idx, layer_emb in enumerate(row[f"embeddings_{key}"], start=1):
-				for dim_idx, value in enumerate(layer_emb):
-					col_name = f"{key}_layer_{layer_idx}_dim_{dim_idx}"
-					row_data[col_name] = value
+				col_name = f"{key}_layer_{layer_idx}"
+				row_data[col_name] = layer_emb.tolist()
 			rows.append(row_data)
 		df_csv = pd.DataFrame(rows)
 		csv_path = os.path.join(output_path, f"{prefix}_embedding_{key}_{label}.csv")
@@ -27,7 +26,7 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 
 		pkl_path = os.path.join(output_path, f"{prefix}_embedding_{key}_{label}.pkl")
 		with open(pkl_path, "wb") as f:
-			pickle.dump(results, f)
+			pickle.dump(rows, f)
 		print(f"💾 File PKL salvato per {key.upper()}: {pkl_path}")
 
 	tokenizer = AutoTokenizer.from_pretrained(model_id)
