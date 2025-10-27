@@ -5,11 +5,34 @@ import numpy as np
 import argparse
 import sys
 import os
+import pickle
 
 def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_path):
+	
+	
+		# === FUNZIONE PER SALVARE EMBEDDINGS ===
+	def save_embeddings(results, key, prefix, label, output_path):
+		rows = []
+		for row in results:
+			row_data = {"ID": row["ID"], "costruzione": row["costruzione"]}
+			for layer_idx, layer_emb in enumerate(row[f"embeddings_{key}"], start=1):
+				for dim_idx, value in enumerate(layer_emb):
+					col_name = f"{key}_layer_{layer_idx}_dim_{dim_idx}"
+					row_data[col_name] = value
+			rows.append(row_data)
+		df_csv = pd.DataFrame(rows)
+		csv_path = os.path.join(output_path, f"{prefix}_embedding_{key}_{label}.csv")
+		df_csv.to_csv(csv_path, index=False)
+		print(f"💾 File CSV salvato per {key.upper()}: {csv_path}")
+
+		pkl_path = os.path.join(output_path, f"{prefix}_embedding_{key}_{label}.pkl")
+		with open(pkl_path, "wb") as f:
+			pickle.dump(results, f)
+		print(f"💾 File PKL salvato per {key.upper()}: {pkl_path}")
 
 	tokenizer = AutoTokenizer.from_pretrained(model_id)
 	model = AutoModelForMaskedLM.from_pretrained(model_id, output_hidden_states = True)
+	model.eval()
 	#AutoModelForMaskedLM carica il modello per il task di Masked Language Modeling
 	#output_hidden_states=True: dice al modello di restituire anche le rappresentazioni interne (embedding di ogni layer).
 
@@ -31,13 +54,14 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 	text_train = pd.read_csv(train_dataset, sep = ";")
 	text_test = pd.read_csv(test_dataset, sep = ";")
 
-	results = []
+	
 	
 	for label, text in [("train", text_train), ("test", text_test)]:
-     
+		
+		results = []
 		predicted_tokens = []
 		for _, line in text.iterrows():
-      
+	  
 			tokens = line["costr"].strip().split(" ")   
    
 			lemma1, prep, lemma2 = line["costr"].strip().split(" ")
@@ -72,7 +96,9 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 			
 			#Converte la frase in ID tokenizzati, creando tensori PyTorch
 
-			embeddings_list = []
+			embeddings_list_UNK = [] 
+			embeddings_list_CLS = []
+			embeddings_list_PREP = []
 			with torch.no_grad():
 				#disattiva il tracciamento dei gradienti (risparmia memoria, utile in inference)
 				outputs = model(**inputs)
@@ -91,57 +117,51 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 				predicted_token = tokenizer.decode(predicted_token_id)
 				#print("Predicted token:", predicted_token, sentence_prediction)
 				#input()
-    
+	
 				predicted_tokens.append(predicted_token)
-    
-    
+	
+	
 				for layer in range(1, 13):
 					#ho stampato print(len(outputs.hidden_states)) = 23
 					#primo layer
 					embeddings = outputs.hidden_states[layer]
-					target_embedding = embeddings[0, target_id, :].numpy()
-					target_embedding_prep = embeddings[0, i+1, :].numpy()
-					embeddings_list.append(target_embedding)
-
-					#print(embeddings_list)
+					target_embedding_UNK = embeddings[0, target_id, :].numpy()
+					target_embedding_PREP = embeddings[0, i+1, :].numpy()
+					target_embedding_CLS = embeddings[0, 0, :].numpy()
+	 
+					embeddings_list_UNK.append(target_embedding_UNK)
+					embeddings_list_CLS.append(target_embedding_CLS)
+					embeddings_list_PREP.append(target_embedding_PREP)
 
 				results.append({
-				"costruzione": line["costr"],
-				"embeddings": embeddings_list  # lista di 22 array di dimensione 768
+					"ID": _ + 1,  # usa l'indice del ciclo iterrows
+					"costruzione": line["costr"],
+					"embeddings_UNK": embeddings_list_UNK,
+					"embeddings_CLS": embeddings_list_CLS,
+					"embeddings_PREP": embeddings_list_PREP
 				})
-    
-    
+	
+	
 		text["pred_" + prefix] = predicted_tokens
 
 		# salva lo stesso file CSV con la nuova colonna
 		output_csv_file = os.path.join(
-    		output_path, 
-    		os.path.basename((train_dataset if label=="train" else test_dataset)).replace(".csv", "_pred.csv")
+			output_path, 
+			os.path.basename((train_dataset if label=="train" else test_dataset)).replace(".csv", "_pred.csv")
 		)		
 
 		text.to_csv(output_csv_file, sep=";", index=False)
 		print(f"Colonna predizioni aggiunta al file duplicato: {output_csv_file}")
 
 
-		# === SALVA COME .pkl ===
-		df = pd.DataFrame(results)
-		df.to_pickle(f"{output_path}/{prefix}_embedding_layers_{label}.pkl")
-		print("file pkl salvato")
 
 
-		# === SALVA COME .csv (ogni layer in colonne separate) ===
-		rows = []
-		for row in results:
-			row_data = {"costruzione": row["costruzione"]}
-			for layer_idx, layer_emb in enumerate(row["embeddings"], start=1):
-				for dim_idx, value in enumerate(layer_emb):
-					col_name = f"layer_{layer_idx}_dim_{dim_idx}"
-					row_data[col_name] = value
-			rows.append(row_data) 
 
-		df_csv = pd.DataFrame(rows)
-		df_csv.to_csv(f"{output_path}/{prefix}_embedding_layers_{label}.csv", index=False)
-		print("file csv salvato")
+		# === SALVATAGGIO FINALE ===
+		save_embeddings(results, "UNK", prefix, label, output_path)
+		save_embeddings(results, "CLS", prefix, label, output_path)
+		save_embeddings(results, "PREP", prefix, label, output_path)
+
 
 
 if __name__ == "__main__":
