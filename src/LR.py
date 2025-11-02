@@ -9,6 +9,7 @@ import math
 import argparse
 import os
 import matplotlib.pyplot as plt
+from collections import Counter
 
 def main(seed, y_train_path, y_test_path, X_train_path, X_test_path, output_path, key, model):
 
@@ -29,6 +30,9 @@ def main(seed, y_train_path, y_test_path, X_train_path, X_test_path, output_path
 	metrics = ["accuracy", "precision", "recall", "f1"]
 	num_seeds = 5
 	all_layers = []
+	pred_df = pd.DataFrame()
+	pred_df["id"] = df_test.index
+
 	for n in range(1, 13):
 	 
 		# print([emb.keys() for emb in emb_test])
@@ -38,7 +42,7 @@ def main(seed, y_train_path, y_test_path, X_train_path, X_test_path, output_path
 		layer_results = {"layer": n}
 		acc_list, prec_list, rec_list, f1_list = [], [], [], []
   
-
+		all_seed_preds = []
 		for i in range (num_seeds):
 			current_state = math.floor(random.random()*100)
 			clf = LogisticRegression(random_state=current_state, max_iter=10000, solver='saga')
@@ -46,6 +50,7 @@ def main(seed, y_train_path, y_test_path, X_train_path, X_test_path, output_path
 			clf.fit(X_train, y_train)
 		
 			preds = clf.predict(X_test)
+			all_seed_preds.append(preds)
 			#preds_prob = clf.predict_proba(X_test)
 			#print(preds_prob[:10])
    
@@ -79,6 +84,17 @@ def main(seed, y_train_path, y_test_path, X_train_path, X_test_path, output_path
 
 
 		all_layers.append(layer_results)
+  
+		# calcola predizione finale come valore più frequente tra i seed
+		final_preds = []
+		for idx in range(len(df_test)):
+			votes = [p[idx] for p in all_seed_preds]  # raccoglie le predizioni di tutti i seed per questo sample
+			most_common = Counter(votes).most_common(1)[0][0]  # trova il valore più frequente
+			final_preds.append("yes" if most_common == 1 else "no")  # converte 1/0 in yes/no
+
+		# aggiungi colonna con nome modello_key_layer
+		col_name = f"{model}_{key}_layer_{n}"
+		pred_df[col_name] = final_preds
 
 	# crea unico DataFrame con layer nelle righe e metriche × seed nelle colonne
 	df = pd.DataFrame(all_layers)
@@ -89,7 +105,11 @@ def main(seed, y_train_path, y_test_path, X_train_path, X_test_path, output_path
 	df.to_csv(csv_path, index=False)
 	print(f"\n Risultati salvati in: {csv_path}")
  
-
+ 
+	pred_file = os.path.join(output_path, f"{model}_{key}_layer_predictions.csv")
+	pred_df.to_csv(pred_file, index=False)
+	print(f"Predizioni finali salvate in: {pred_file}")
+	
 	df = pd.read_csv(f"data/output/predictions/{model}_{key}_all_metrics.csv")
 
 	# Disegna il grafico della media della accuracy per layer
