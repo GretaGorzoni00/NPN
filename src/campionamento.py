@@ -4,7 +4,7 @@ import random
 from collections import defaultdict
 
 # === Parametri ===
-input_file = "/Users/gretagorzoni/Desktop/TESI_CODE/data/data_set//A_distractor.csv"       
+input_file = "data/data_set/SU_distractor.csv"       
 min_len = 5
 max_len = 30
 max_per_lemma = 30

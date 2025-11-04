@@ -16,8 +16,8 @@ train_ratio = 0.8
 
 # === Lista di righe, evita righe vuote ===
 def read_csv(file_path, delimiter=";"):
-    with open(file_path, "r", encoding="utf-8") as f:
-        reader = csv.reader(f, delimiter=";")
+    with open(file_path, "r", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f, delimiter=";")
         return [row for row in reader if len(row) > 0]
 
 
@@ -25,7 +25,8 @@ def read_csv(file_path, delimiter=";"):
 # === Scrivere CSV ===
 def write_csv(file_path, rows, delimiter=";"):
     with open(file_path, "w", encoding="utf-8", newline="") as f:
-        writer = csv.writer(f, delimiter=delimiter)
+        writer = csv.DictWriter(f, delimiter=delimiter, fieldnames= ["NPN",	"construction",	'preposition',	'noun',	'context_pre',	"costr",	'context_post','number_of_noun',	'Type',	'meaning',"syntactic_function"], restval= '_')
+        writer.writeheader()
         writer.writerows(rows)
         
 # === Divisione trainig e test ===
@@ -33,7 +34,7 @@ def split_rows_lemma_per_lemma(rows, train_ratio):
     """Split per lemma 80/20"""
     lemma_dict = defaultdict(list)
     for r in rows:
-        lemma_dict[r[3].strip()].append(r)
+        lemma_dict[r["noun"].strip()].append(r)
 
     train_rows = []
     test_rows = []
@@ -53,8 +54,8 @@ costruzioni = read_csv(costruzioni_A_file) + read_csv(costruzioni_SU_file)
 distrattori = read_csv(distrattori_A_file) + read_csv(distrattori_SU_file)
 
 # === Distinzione lemmi condivisi ===
-lemmi_costruzioni = set([row[3].strip() for row in costruzioni])
-lemmi_distrattori = set([row[3].strip() for row in distrattori])
+lemmi_costruzioni = set([row["noun"].strip() for row in costruzioni])
+lemmi_distrattori = set([row["noun"].strip() for row in distrattori])
 # intersezione tra i due set
 lemmi_comuni = lemmi_costruzioni & lemmi_distrattori
 
@@ -62,7 +63,7 @@ lemmi_comuni = lemmi_costruzioni & lemmi_distrattori
 def split_by_lemma(rows):
     lemma_dict = defaultdict(list)
     for r in rows:
-        lemma_dict[r[0].strip()].append(r)
+        lemma_dict[r["noun"].strip()].append(r)
     return lemma_dict
 
 costruzioni_dict = split_by_lemma(costruzioni)
@@ -84,13 +85,13 @@ train_c2, test_c2= split_rows_lemma_per_lemma(costruzioni, train_ratio)
 # verifica su ogni lemma!!!!!
 distrattori_unbalanced =[]
 for rows in distrattori:
-    if rows[3] not in lemmi_comuni:
+    if rows["noun"] not in lemmi_comuni:
         distrattori_unbalanced.append(rows)
 train_d2, test_d_unbalabced_2 = split_rows_lemma_per_lemma(distrattori_unbalanced, train_ratio)
 
 test_d_lemmi_comuni = []
 for rows in distrattori:
-    if rows[3] in lemmi_comuni:
+    if rows["noun"] in lemmi_comuni:
         test_d_lemmi_comuni.append(rows)
         
 test_d2 = test_d_unbalabced_2 + test_d_lemmi_comuni
@@ -107,13 +108,13 @@ train_d3, test_d3= split_rows_lemma_per_lemma(distrattori, train_ratio)
 # verifica su ogni lemma!!!!!
 costruzioni_unbalanced =[]
 for rows in costruzioni:
-    if rows[3] not in lemmi_comuni:
+    if rows["noun"] not in lemmi_comuni:
         costruzioni_unbalanced.append(rows)
 train_c3, test_c_unbalabced_3 = split_rows_lemma_per_lemma(distrattori_unbalanced, train_ratio)
 
 test_c_lemmi_comuni = []
 for rows in costruzioni:
-    if rows[3] in lemmi_comuni:
+    if rows["noun"] in lemmi_comuni:
         test_c_lemmi_comuni.append(rows)
         
 test_c3 = test_c_unbalabced_3 + test_c_lemmi_comuni
