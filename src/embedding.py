@@ -7,11 +7,11 @@ import sys
 import os
 import pickle
 
-def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_path):
+def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_path, split):
 	
 	
 		# === FUNZIONE PER SALVARE EMBEDDINGS ===
-	def save_embeddings(results, key, prefix, label, output_path):
+	def save_embeddings(results, key, prefix, label, output_path, split):
 		rows = []
 		for row in results:
 			row_data = {"ID": row["ID"], "costruzione": row["costruzione"]}
@@ -20,14 +20,20 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 				row_data[col_name] = layer_emb.tolist()
 			rows.append(row_data)
 		df_csv = pd.DataFrame(rows)
-		csv_path = os.path.join(output_path, f"{prefix}_embedding_{key}_{label}.csv")
-		df_csv.to_csv(csv_path, index=False)
-		print(f"💾 File CSV salvato per {key.upper()}: {csv_path}")
+		split_dir = os.path.join(os.getcwd(), output_path, split)
+		os.makedirs(split_dir, exist_ok=True)
 
-		pkl_path = os.path.join(output_path, f"{prefix}_embedding_{key}_{label}.pkl")
+		base_name = f"{prefix}_embedding_{key}_{label}_{split}"
+		csv_path = os.path.join(split_dir, f"{base_name}.csv")
+		pkl_path = os.path.join(split_dir, f"{base_name}.pkl")
+
+		# Salva i file
+		df_csv.to_csv(csv_path, index=False)
+		print(f"File CSV salvato per {key.upper()}: {csv_path}")
+
 		with open(pkl_path, "wb") as f:
 			pickle.dump(rows, f)
-		print(f"💾 File PKL salvato per {key.upper()}: {pkl_path}")
+		print(f"File PKL salvato per {key.upper()}: {pkl_path}")
 
 	tokenizer = AutoTokenizer.from_pretrained(model_id)
 	model = AutoModelForMaskedLM.from_pretrained(model_id, output_hidden_states = True)
@@ -157,20 +163,21 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 
 
 		# === SALVATAGGIO FINALE ===
-		save_embeddings(results, "UNK", prefix, label, output_path)
-		save_embeddings(results, "CLS", prefix, label, output_path)
-		save_embeddings(results, "PREP", prefix, label, output_path)
+		save_embeddings(results, "UNK", prefix, label, output_path, split)
+		save_embeddings(results, "CLS", prefix, label, output_path, split)
+		save_embeddings(results, "PREP", prefix, label, output_path, split)
 
 
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 
-	parser.add_argument("-m", "--model", default = "DeepMount00/ModernBERT-base-ita")
-	parser.add_argument("--prefix", default ="MB")
+	parser.add_argument("-m", "--model", default = "dbmdz/bert-base-italian-cased")
+	parser.add_argument("--prefix", default ="BERT")
 	parser.add_argument("-t", "--tokenizer_path", default = "data/tokenizer")
-	parser.add_argument("--train", default = "data/data.tsv")
-	parser.add_argument("--test", default = "data/data.tsv")
+	parser.add_argument("--train", default = "data/data_set/train_test_distractor_setting/type_balanced_train.csv")
+	parser.add_argument("--test", default = "data/data_set/train_test_distractor_setting/type_balanced_test.csv")
 	parser.add_argument("-o", "--output_path", default = "data/output/embeddings")
+	parser.add_argument("-s", "--split", default = "type_balanced")
 	args = parser.parse_args()
-	main(args.model, args.prefix, args.tokenizer_path, args.train, args.test, args.output_path)
+	main(args.model, args.prefix, args.tokenizer_path, args.train, args.test, args.output_path, args.split)

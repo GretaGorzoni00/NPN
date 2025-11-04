@@ -11,7 +11,7 @@ import os
 import matplotlib.pyplot as plt
 from collections import Counter
 
-def main(seed, y_train_path, y_test_path, X_train_path, X_test_path, output_path, key, model):
+def main(seed, y_train_path, y_test_path, X_train_path, X_test_path, output_path, key, model, split):
 
 	random.seed(seed)
 
@@ -100,17 +100,17 @@ def main(seed, y_train_path, y_test_path, X_train_path, X_test_path, output_path
 	df = pd.DataFrame(all_layers)
 
 	# salvataggio CSV unico
-	csv_name = f"{model}_{key}_all_metrics.csv"
+	csv_name = f"{model}_{key}_{split}_all_metrics.csv"
 	csv_path = os.path.join(output_path, csv_name)
 	df.to_csv(csv_path, index=False)
 	print(f"\n Risultati salvati in: {csv_path}")
  
  
-	pred_file = os.path.join(output_path, f"{model}_{key}_layer_predictions.csv")
+	pred_file = os.path.join(output_path, f"{model}_{key}_{split}_layer_predictions.csv")
 	pred_df.to_csv(pred_file, index=False)
 	print(f"Predizioni finali salvate in: {pred_file}")
 	
-	df = pd.read_csv(f"data/output/predictions/{model}_{key}_all_metrics.csv")
+	df = pd.read_csv(f"data/output/predictions/{model}_{key}_{split}_all_metrics.csv")
 
 	# Disegna il grafico della media della accuracy per layer
 	plt.figure(figsize=(10, 6))
@@ -129,7 +129,7 @@ def main(seed, y_train_path, y_test_path, X_train_path, X_test_path, output_path
 	plt.legend()
 	plt.tight_layout()
 
-	img_name = f"{model}_{key}_mean_accuracy.png"
+	img_name = f"{model}_{key}_{split}_mean_accuracy.png"
 	img_path = os.path.join(output_path, img_name)
 	plt.savefig(img_path, dpi=300)
 	print(f"Grafico salvato in: {img_path}\n")
@@ -139,12 +139,13 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	
 	parser.add_argument("--seed", default = 42)
-	parser.add_argument("--X_train", default ="data/output/embeddings/BERT_embedding_UNK_train.pkl")
-	parser.add_argument("--y_train", default = "data/output/embeddings/lemma_balanced_train_pred.csv")
-	parser.add_argument("--X_test", default = "data/output/embeddings/BERT_embedding_UNK_test.pkl")
-	parser.add_argument("--y_test", default = "data/output/embeddings/lemma_balanced_test_pred.csv")
+	parser.add_argument("--X_train", default ="data/output/embeddings/type_balanced/BERT_embedding_UNK_train_type_balanced.pkl")
+	parser.add_argument("--y_train", default = "data/output/embeddings/type_balanced_train_pred.csv")
+	parser.add_argument("--X_test", default = "data/output/embeddings/type_balanced/BERT_embedding_UNK_test_type_balanced.pkl")
+	parser.add_argument("--y_test", default = "data/output/embeddings/type_balanced_test_pred.csv")
 	parser.add_argument("-o", "--output_path", default = "data/output/predictions")
 	parser.add_argument("-k", "--key", default = "UNK")
 	parser.add_argument("-m", "--model", default = "BERT")
+	parser.add_argument("-s", "--split", default = "type_balanced")
 	args = parser.parse_args()
-	main(args.seed, args.y_train, args.y_test, args.X_train, args.X_test, args.output_path, args.key, args.model)
+	main(args.seed, args.y_train, args.y_test, args.X_train, args.X_test, args.output_path, args.key, args.model, args.split)
