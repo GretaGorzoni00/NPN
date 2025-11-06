@@ -68,17 +68,16 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 		#print(preds_prob[:10])
 
 			report = classification_report(y_test, preds, digits=4, output_dict=True)
+   
+			acc = report["accuracy"]
+			prec = report["weighted avg"]["precision"]
+			rec = report["weighted avg"]["recall"]
+			f1 = report["weighted avg"]["f1-score"]
 	
 			acc_list.append(acc)
 			prec_list.append(prec)
 			rec_list.append(rec)
 			f1_list.append(f1)
-   
-   
-			#acc = report_dict["accuracy"]
-			#prec = report_dict["weighted avg"]["precision"]
-			#rec = report_dict["weighted avg"]["recall"]
-			#f1 = report_dict["weighted avg"]["f1-score"]
 		
 
 			print(acc_list)
@@ -119,7 +118,7 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 
 	plt.xlabel("Layer")
 	plt.ylabel("Accuracy")
-	plt.title(f"Mean Accuracy {model}_{key}")
+	plt.title(f"Mean Accuracy {model}_{key}_{experiment}_{split}")
 	plt.grid(True)
 	plt.ylim(0.6, 1.0)
 
@@ -138,14 +137,14 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--seed", default=42, type=int)
-	parser.add_argument("--X_train", nargs='+', default=["data/output/embeddings/simple_test/BERT_embedding_ex1_UNK_train_simple_test_ex1_simple_train_0.pkl", "data/output/embeddings/simple_test/BERT_embedding_ex1_UNK_train_simple_test_ex1_simple_train_1.pkl", "data/output/embeddings/simple_test/BERT_embedding_ex1_UNK_train_simple_test_ex1_simple_train_2.pkl", "data/output/embeddings/simple_test/BERT_embedding_ex1_UNK_train_simple_test_ex1_simple_train_3.pkl", "data/output/embeddings/simple_test/BERT_embedding_ex1_UNK_train_simple_test_ex1_simple_train_4.pkl"])
+	parser.add_argument("--X_train", nargs='+', default=["data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_0.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_1.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_2.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_3.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_4.pkl"])
 	parser.add_argument("--y_train", nargs='+', default = ["data/data_set/ex1_simple_train_0.csv", "data/data_set/ex1_simple_train_1.csv", "data/data_set/ex1_simple_train_2.csv", "data/data_set/ex1_simple_train_3.csv", "data/data_set/ex1_simple_train_4.csv"])
-	parser.add_argument("--X_test", nargs='+', default=["data/output/embeddings/simple_test/BERT_embedding_ex1_UNK_train_simple_test_ex1_simple_test_0.pkl", "data/output/embeddings/simple_test/BERT_embedding_ex1_UNK_train_simple_test_ex1_simple_test_1.pkl", "data/output/embeddings/simple_test/BERT_embedding_ex1_UNK_train_simple_test_ex1_simple_test_2.pkl", "data/output/embeddings/simple_test/BERT_embedding_ex1_UNK_train_simple_test_ex1_simple_test_3.pkl", "data/output/embeddings/simple_test/BERT_embedding_ex1_UNK_train_simple_test_ex1_simple_test_4.pkl"])
+	parser.add_argument("--X_test", nargs='+', default=["data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_0.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_1.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_2.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_3.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_4.pkl"])
 	parser.add_argument("--y_test", nargs='+', default = ["data/data_set/ex1_simple_test_0.csv", "data/data_set/ex1_simple_test_1.csv", "data/data_set/ex1_simple_test_2.csv", "data/data_set/ex1_simple_test_3.csv", "data/data_set/ex1_simple_test_4.csv"])
 	parser.add_argument("-o", "--output_path", default="data/output/predictions")
 	parser.add_argument("-k", "--key", default="UNK")
 	parser.add_argument("-m", "--model", default="BERT")
-	parser.add_argument("-s", "--split", default="simple_test")
+	parser.add_argument("-s", "--split", default="simple")
 	parser. add_argument("-e", "--experiment", default="ex1")
 	args = parser.parse_args()
 
