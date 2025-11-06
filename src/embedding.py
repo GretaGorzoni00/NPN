@@ -7,11 +7,12 @@ import sys
 import os
 import pickle
 
-def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_path, split, experiment):
+def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_path, split):
 	
 	
 		# === FUNZIONE PER SALVARE EMBEDDINGS ===
-	def save_embeddings(results, key, prefix, experiment, label, output_path, split):
+	def save_embeddings(results, key, prefix, output_path, split, source_file):
+
 		rows = []
 		for row in results:
 			row_data = {"ID": row["ID"], "costruzione": row["costruzione"]}
@@ -23,7 +24,7 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 		split_dir = os.path.join(os.getcwd(), output_path, split)
 		os.makedirs(split_dir, exist_ok=True)
 
-		base_name = f"{prefix}_embedding_{experiment}_{key}_{label}_{split}_{os.path.basename(train_file).replace('.csv', '')}"
+		base_name = f"{prefix}_embedding_{key}_{os.path.basename(source_file).replace('.csv', '')}"
 		csv_path = os.path.join(split_dir, f"{base_name}.csv")
 		pkl_path = os.path.join(split_dir, f"{base_name}.pkl")
 
@@ -166,9 +167,11 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 
 
 			# === SALVATAGGIO FINALE ===
-			save_embeddings(results, "UNK", prefix, experiment, label, output_path, split)
-			save_embeddings(results, "CLS", prefix, experiment, label, output_path, split)
-			save_embeddings(results, "PREP", prefix, experiment, label, output_path, split)
+			source_file = train_file if label == "train" else test_file
+
+			save_embeddings(results, "UNK", prefix, output_path, split, source_file)
+			save_embeddings(results, "CLS", prefix, output_path, split, source_file)
+			save_embeddings(results, "PREP", prefix, output_path, split, source_file)
 
 
 
@@ -179,9 +182,8 @@ if __name__ == "__main__":
 	parser.add_argument("--prefix", default ="BERT")
 	parser.add_argument("-t", "--tokenizer_path", default = "data/tokenizer")
 	parser.add_argument("--train", nargs="+", default = ["data/data_set/ex1_simple_train_0.csv", "data/data_set/ex1_simple_train_1.csv", "data/data_set/ex1_simple_train_2.csv", "data/data_set/ex1_simple_train_3.csv", "data/data_set/ex1_simple_train_4.csv"])
-	parser.add_argument("--test", nargs="+", default = ["data/data_set/ex1_simple_train_0.csv", "data/data_set/ex1_simple_train_1.csv", "data/data_set/ex1_simple_train_2.csv", "data/data_set/ex1_simple_train_3.csv", "data/data_set/ex1_simple_train_4.csv"])
+	parser.add_argument("--test", nargs="+", default = ["data/data_set/ex1_simple_test_0.csv", "data/data_set/ex1_simple_test_1.csv", "data/data_set/ex1_simple_test_2.csv", "data/data_set/ex1_simple_test_3.csv", "data/data_set/ex1_simple_test_4.csv"])
 	parser.add_argument("-o", "--output_path", default = "data/output/embeddings")
-	parser.add_argument("-s", "--split", default = "simple_test")
-	parser. add_argument("-e", "--experiment", default="ex1")
+	parser.add_argument("-s", "--split", default = "simple")
 	args = parser.parse_args()
-	main(args.model, args.prefix, args.tokenizer_path, args.train, args.test, args.output_path, args.split, args.experiment)
+	main(args.model, args.prefix, args.tokenizer_path, args.train, args.test, args.output_path, args.split)
