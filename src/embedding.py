@@ -133,10 +133,11 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 					for layer in range(1, 13):
 						#ho stampato print(len(outputs.hidden_states)) = 23
 						#primo layer
-						embeddings = outputs.hidden_states[layer]
-						target_embedding_UNK = embeddings[0, target_id, :].numpy()
-						target_embedding_PREP = embeddings[0, i+1, :].numpy()
-						target_embedding_CLS = embeddings[0, 0, :].numpy()
+						embeddings_UNK = outputs.hidden_states[layer]
+						embeddings_ORIGIN = output_orig.hidden_states[layer]
+						target_embedding_UNK = embeddings_UNK[0, target_id, :].numpy()
+						target_embedding_PREP = embeddings_ORIGIN[0, i+1, :].numpy()
+						target_embedding_CLS = embeddings_UNK[0, 0, :].numpy()
 		
 						embeddings_list_UNK.append(target_embedding_UNK)
 						embeddings_list_CLS.append(target_embedding_CLS)
@@ -181,9 +182,9 @@ if __name__ == "__main__":
 	parser.add_argument("-m", "--model", default = "dbmdz/bert-base-italian-cased")
 	parser.add_argument("--prefix", default ="BERT")
 	parser.add_argument("-t", "--tokenizer_path", default = "data/tokenizer")
-	parser.add_argument("--train", nargs="+", default = ["data/data_set/ex1_other_train_0.csv", "data/data_set/ex1_other_train_1.csv", "data/data_set/ex1_other_train_2.csv", "data/data_set/ex1_other_train_3.csv", "data/data_set/ex1_other_train_4.csv"])
-	parser.add_argument("--test", nargs="+", default = ["data/data_set/ex1_other_test_0.csv", "data/data_set/ex1_other_test_1.csv", "data/data_set/ex1_other_test_2.csv", "data/data_set/ex1_other_test_3.csv", "data/data_set/ex1_other_test_4.csv"])
+	parser.add_argument("--train", nargs="+", default = ["data/data_set/ex1_pseudo_train_0.csv", "data/data_set/ex1_pseudo_train_1.csv", "data/data_set/ex1_pseudo_train_2.csv", "data/data_set/ex1_pseudo_train_3.csv", "data/data_set/ex1_pseudo_train_4.csv"])
+	parser.add_argument("--test", nargs="+", default = ["data/data_set/ex1_pseudo_test_0.csv", "data/data_set/ex1_pseudo_test_1.csv", "data/data_set/ex1_pseudo_test_2.csv", "data/data_set/ex1_pseudo_test_3.csv", "data/data_set/ex1_pseudo_test_4.csv"])
 	parser.add_argument("-o", "--output_path", default = "data/output/embeddings")
-	parser.add_argument("-s", "--split", default = "other")
+	parser.add_argument("-s", "--split", default = "pseudo")
 	args = parser.parse_args()
 	main(args.model, args.prefix, args.tokenizer_path, args.train, args.test, args.output_path, args.split)
