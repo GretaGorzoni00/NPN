@@ -105,48 +105,84 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 	df.to_csv(csv_path, index=False)
 	print(f"\nRisultati medi salvati in: {csv_path}")
 
-	# plot con deviazione standard
+	# deselezionare blocco per plottare solo accuracy
+	# plt.figure(figsize=(10, 6))
+	# plt.errorbar(
+	# 	df["layer"],
+	# 	df["mean_accuracy"],
+	# 	yerr=df["std_accuracy"],
+	# 	fmt='-o',
+	# 	capsize=5,
+	# 	label="Mean Accuracy ± SD"
+	# )
+
+	# plt.xlabel("Layer")
+	# plt.ylabel("Accuracy")
+	# plt.title(f"Mean Accuracy {model}_{key}_{experiment}_{split}")
+	# plt.grid(True)
+	# plt.ylim(0.4, 1.0)
+
+	# for i, acc in enumerate(df["mean_accuracy"]):
+	# 	plt.text(df["layer"][i], acc + 0.005, f"{acc:.4f}", ha='center', va='bottom', fontsize=9)
+
+	# plt.legend()
+	# plt.tight_layout()
+
+	# img_name = f"{model}_{experiment}_{key}_{split}_mean_accuracy.png"
+	# img_path = os.path.join(output_path, img_name)
+	# plt.savefig(img_path, dpi=300)
+	# print(f"Grafico salvato in: {img_path}\n")
+ 
+	#blocco seguente plotta accuracy, precision, recall, f1
 	plt.figure(figsize=(10, 6))
+
+	# Plot delle 4 metriche con le rispettive barre di errore
 	plt.errorbar(
-		df["layer"],
-		df["mean_accuracy"],
-		yerr=df["std_accuracy"],
-		fmt='-o',
-		capsize=5,
-		label="Mean Accuracy ± SD"
+		df["layer"], df["mean_accuracy"], yerr=df["std_accuracy"],
+		fmt='-o', capsize=4, label="Accuracy"
+	)
+	plt.errorbar(
+		df["layer"], df["mean_precision"], yerr=df["std_precision"],
+		fmt='-s', capsize=4, label="Precision"
+	)
+	plt.errorbar(
+		df["layer"], df["mean_recall"], yerr=df["std_recall"],
+		fmt='-^', capsize=4, label="Recall"
+	)
+	plt.errorbar(
+		df["layer"], df["mean_f1"], yerr=df["std_f1"],
+		fmt='-d', capsize=4, label="F1-score"
 	)
 
 	plt.xlabel("Layer")
-	plt.ylabel("Accuracy")
-	plt.title(f"Mean Accuracy {model}_{key}_{experiment}_{split}")
+	plt.ylabel("Score")
+	plt.title(f"Performance metrics per layer – {model}_{key}_{experiment}_{split}")
 	plt.grid(True)
 	plt.ylim(0.4, 1.0)
-
-	for i, acc in enumerate(df["mean_accuracy"]):
-		plt.text(df["layer"][i], acc + 0.005, f"{acc:.4f}", ha='center', va='bottom', fontsize=9)
-
 	plt.legend()
 	plt.tight_layout()
 
-	img_name = f"{model}_{experiment}_{key}_{split}_mean_accuracy.png"
+
+	# Salva grafico
+	img_name = f"{model}_{experiment}_{key}_{split}_metrics.png"
 	img_path = os.path.join(output_path, img_name)
 	plt.savefig(img_path, dpi=300)
 	print(f"Grafico salvato in: {img_path}\n")
 
-
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--seed", default=42, type=int)
-	parser.add_argument("--X_train", nargs='+', default=["data/output/embeddings/other/BERT_embedding_UNK_ex1_other_train_0.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_train_1.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_train_2.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_train_3.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_train_4.pkl"])
-	parser.add_argument("--y_train", nargs='+', default = ["data/data_set/ex1_other_train_0.csv", "data/data_set/ex1_other_train_1.csv", "data/data_set/ex1_other_train_2.csv", "data/data_set/ex1_other_train_3.csv", "data/data_set/ex1_other_train_4.csv"])
-	parser.add_argument("--X_test", nargs='+', default=["data/output/embeddings/other/BERT_embedding_UNK_ex1_other_test_0.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_test_1.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_test_2.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_test_3.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_test_4.pkl"])
-	parser.add_argument("--y_test", nargs='+', default = ["data/data_set/ex1_other_test_0.csv", "data/data_set/ex1_other_test_1.csv", "data/data_set/ex1_other_test_2.csv", "data/data_set/ex1_other_test_3.csv", "data/data_set/ex1_other_test_4.csv"])
+	parser.add_argument("--X_train", nargs='+', default=["data/output/embeddings/pseudo/BERT_embedding_CLS_ex1_pseudo_train_0.pkl", "data/output/embeddings/pseudo/BERT_embedding_CLS_ex1_pseudo_train_1.pkl", "data/output/embeddings/pseudo/BERT_embedding_CLS_ex1_pseudo_train_2.pkl", "data/output/embeddings/pseudo/BERT_embedding_CLS_ex1_pseudo_train_3.pkl", "data/output/embeddings/pseudo/BERT_embedding_CLS_ex1_pseudo_train_4.pkl"])
+	parser.add_argument("--y_train", nargs='+', default = ["data/data_set/ex1_pseudo_train_0.csv", "data/data_set/ex1_pseudo_train_1.csv", "data/data_set/ex1_pseudo_train_2.csv", "data/data_set/ex1_pseudo_train_3.csv", "data/data_set/ex1_pseudo_train_4.csv"])
+	parser.add_argument("--X_test", nargs='+', default=["data/output/embeddings/pseudo/BERT_embedding_CLS_ex1_pseudo_test_0.pkl", "data/output/embeddings/pseudo/BERT_embedding_CLS_ex1_pseudo_test_1.pkl", "data/output/embeddings/pseudo/BERT_embedding_CLS_ex1_pseudo_test_2.pkl", "data/output/embeddings/pseudo/BERT_embedding_CLS_ex1_pseudo_test_3.pkl", "data/output/embeddings/pseudo/BERT_embedding_CLS_ex1_pseudo_test_4.pkl"])
+	parser.add_argument("--y_test", nargs='+', default = ["data/data_set/ex1_pseudo_test_0.csv", "data/data_set/ex1_pseudo_test_1.csv", "data/data_set/ex1_pseudo_test_2.csv", "data/data_set/ex1_pseudo_test_3.csv", "data/data_set/ex1_pseudo_test_4.csv"])
 	parser.add_argument("-o", "--output_path", default="data/output/predictions")
-	parser.add_argument("-k", "--key", default="UNK")
+	parser.add_argument("-k", "--key", default="CLS")
 	parser.add_argument("-m", "--model", default="BERT")
-	parser.add_argument("-s", "--split", default="other")
+	parser.add_argument("-s", "--split", default="pseudo")
 	parser. add_argument("-e", "--experiment", default="ex1")
 	args = parser.parse_args()
+
 
 	main(
 		args.seed,
