@@ -120,7 +120,7 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 	plt.ylabel("Accuracy")
 	plt.title(f"Mean Accuracy {model}_{key}_{experiment}_{split}")
 	plt.grid(True)
-	plt.ylim(0.6, 1.0)
+	plt.ylim(0.4, 1.0)
 
 	for i, acc in enumerate(df["mean_accuracy"]):
 		plt.text(df["layer"][i], acc + 0.005, f"{acc:.4f}", ha='center', va='bottom', fontsize=9)
@@ -137,14 +137,14 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--seed", default=42, type=int)
-	parser.add_argument("--X_train", nargs='+', default=["data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_0.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_1.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_2.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_3.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_4.pkl"])
-	parser.add_argument("--y_train", nargs='+', default = ["data/data_set/ex1_simple_train_0.csv", "data/data_set/ex1_simple_train_1.csv", "data/data_set/ex1_simple_train_2.csv", "data/data_set/ex1_simple_train_3.csv", "data/data_set/ex1_simple_train_4.csv"])
-	parser.add_argument("--X_test", nargs='+', default=["data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_0.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_1.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_2.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_3.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_4.pkl"])
-	parser.add_argument("--y_test", nargs='+', default = ["data/data_set/ex1_simple_test_0.csv", "data/data_set/ex1_simple_test_1.csv", "data/data_set/ex1_simple_test_2.csv", "data/data_set/ex1_simple_test_3.csv", "data/data_set/ex1_simple_test_4.csv"])
+	parser.add_argument("--X_train", nargs='+', default=["data/output/embeddings/other/BERT_embedding_UNK_ex1_other_train_0.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_train_1.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_train_2.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_train_3.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_train_4.pkl"])
+	parser.add_argument("--y_train", nargs='+', default = ["data/data_set/ex1_other_train_0.csv", "data/data_set/ex1_other_train_1.csv", "data/data_set/ex1_other_train_2.csv", "data/data_set/ex1_other_train_3.csv", "data/data_set/ex1_other_train_4.csv"])
+	parser.add_argument("--X_test", nargs='+', default=["data/output/embeddings/other/BERT_embedding_UNK_ex1_other_test_0.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_test_1.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_test_2.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_test_3.pkl", "data/output/embeddings/other/BERT_embedding_UNK_ex1_other_test_4.pkl"])
+	parser.add_argument("--y_test", nargs='+', default = ["data/data_set/ex1_other_test_0.csv", "data/data_set/ex1_other_test_1.csv", "data/data_set/ex1_other_test_2.csv", "data/data_set/ex1_other_test_3.csv", "data/data_set/ex1_other_test_4.csv"])
 	parser.add_argument("-o", "--output_path", default="data/output/predictions")
 	parser.add_argument("-k", "--key", default="UNK")
 	parser.add_argument("-m", "--model", default="BERT")
-	parser.add_argument("-s", "--split", default="simple")
+	parser.add_argument("-s", "--split", default="other")
 	parser. add_argument("-e", "--experiment", default="ex1")
 	args = parser.parse_args()
 
