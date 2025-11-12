@@ -17,7 +17,12 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 	#random.seed(seed)
 	all_layers = []
  
-	for n in range(1, 13):
+ 
+	is_contextual = "bert" in model.lower()
+	# Numero di layer da esplorare solo se il modello è BERT-like
+	layer_range = range(1, 13)
+ 
+	for n in layer_range:
 		acc_list, prec_list, rec_list, f1_list = [], [], [], []
   
   		# ciclo su tutte le 5 coppie di file
@@ -31,13 +36,30 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 
 			y_train = np.array([1 if label == "yes" else 0 for label in df_train["construction"]])
 			y_test = np.array([1 if label == "yes" else 0 for label in df_test["construction"]])
+   
+			if X_test_path.endswith(".pkl"):
 
-			emb_train = pd.read_pickle(X_train_path)
-			emb_test = pd.read_pickle(X_test_path)
+				emb_train = pd.read_pickle(X_train_path)
+				emb_test = pd.read_pickle(X_test_path)
+
+			else:
+
+				emb_train = pd.read_csv(X_train_path, header=None, sep=" ")
+				emb_test = pd.read_csv(X_test_path, header=None, sep=" ")
+
+    
+				
 	
-			X_train = np.array([np.array(emb[f"{key}_layer_{n}"]) for emb in emb_train])
-			X_test = np.array([np.array(emb[f"{key}_layer_{n}"]) for emb in emb_test])
-
+			# --- Se BERT-like, estrai layer specifici ---
+			if is_contextual:
+				X_train = np.array([np.array(emb[f"{key}_layer_{n}"]) for emb in emb_train])
+				X_test = np.array([np.array(emb[f"{key}_layer_{n}"]) for emb in emb_test])
+			else:
+				# FastText o altri embedding statici
+				X_train = emb_train.drop(columns=[0]).values
+				X_test = emb_test.drop(columns=[0]).values
+				
+				
 	
 	# inizializzazione strutture per i risultati
 	#metrics = ["accuracy", "precision", "recall", "f1"]
@@ -104,6 +126,54 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 	csv_path = os.path.join(output_path, csv_name)
 	df.to_csv(csv_path, index=False)
 	print(f"\nRisultati medi salvati in: {csv_path}")
+ 
+	# === SALVA LE PREDIZIONI PER OGNI SPLIT E LAYER ===
+	print("\nSalvataggio predizioni per ogni split e layer...")
+
+	for split_idx, (X_train_path, y_train_path, X_test_path, y_test_path) in enumerate(
+		zip(X_train_files, y_train_files, X_test_files, y_test_files)
+	):
+		print(f"  → Split {split_idx + 1}")
+
+		df_train = pd.read_csv(y_train_path, sep=";")
+		df_test = pd.read_csv(y_test_path, sep=";")
+		y_test = np.array([1 if label == "yes" else 0 for label in df_test["construction"]])
+
+		layer_pred_dict = {}
+
+		for n in layer_range:
+			if X_test_path.endswith(".pkl"):
+				emb_train = pd.read_pickle(X_train_path)
+				emb_test = pd.read_pickle(X_test_path)
+			else:
+				emb_train = pd.read_csv(X_train_path, header=None, sep=" ")
+				emb_test = pd.read_csv(X_test_path, header=None, sep=" ")
+
+			if is_contextual:
+				X_train = np.array([np.array(emb[f"{key}_layer_{n}"]) for emb in emb_train])
+				X_test = np.array([np.array(emb[f"{key}_layer_{n}"]) for emb in emb_test])
+			else:
+				X_train = emb_train.drop(columns=[0]).values
+				X_test = emb_test.drop(columns=[0]).values
+
+			clf = LogisticRegression(random_state=seed, max_iter=10000, solver='liblinear')
+			clf.fit(X_train, np.array([1 if label == "yes" else 0 for label in df_train["construction"]]))
+			preds = clf.predict(X_test)
+			# salva come yes/no
+			layer_pred_dict[f"layer_{n}"] = ["yes" if p == 1 else "no" for p in preds]
+
+		# Crea DataFrame con gold e predizioni per layer
+		df_preds = pd.DataFrame(layer_pred_dict)
+		df_preds.insert(0, "gold", df_test["construction"].tolist())
+
+		# Salva CSV
+		csv_path = os.path.join(output_path, f"{model}_{experiment}_{key}_{split}_split{split_idx}_predictions.csv")
+		df_preds.to_csv(csv_path, index=False)
+		print(f"    Predizioni salvate in: {csv_path}")
+
+
+ 
+	
 
 	# deselezionare blocco per plottare solo accuracy
 	# plt.figure(figsize=(10, 6))
@@ -172,13 +242,13 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--seed", default=42, type=int)
-	parser.add_argument("--X_train", nargs='+', default=["data/output/embeddings/pseudo/BERT_embedding_PREP_ex1_pseudo_train_0.pkl", "data/output/embeddings/pseudo/BERT_embedding_PREP_ex1_pseudo_train_1.pkl", "data/output/embeddings/pseudo/BERT_embedding_PREP_ex1_pseudo_train_2.pkl", "data/output/embeddings/pseudo/BERT_embedding_PREP_ex1_pseudo_train_3.pkl", "data/output/embeddings/pseudo/BERT_embedding_PREP_ex1_pseudo_train_4.pkl"])
-	parser.add_argument("--y_train", nargs='+', default = ["data/data_set/ex1_pseudo_train_0.csv", "data/data_set/ex1_pseudo_train_1.csv", "data/data_set/ex1_pseudo_train_2.csv", "data/data_set/ex1_pseudo_train_3.csv", "data/data_set/ex1_pseudo_train_4.csv"])
-	parser.add_argument("--X_test", nargs='+', default=["data/output/embeddings/pseudo/BERT_embedding_PREP_ex1_pseudo_test_0.pkl", "data/output/embeddings/pseudo/BERT_embedding_PREP_ex1_pseudo_test_1.pkl", "data/output/embeddings/pseudo/BERT_embedding_PREP_ex1_pseudo_test_2.pkl", "data/output/embeddings/pseudo/BERT_embedding_PREP_ex1_pseudo_test_3.pkl", "data/output/embeddings/pseudo/BERT_embedding_PREP_ex1_pseudo_test_4.pkl"])
-	parser.add_argument("--y_test", nargs='+', default = ["data/data_set/ex1_pseudo_test_0.csv", "data/data_set/ex1_pseudo_test_1.csv", "data/data_set/ex1_pseudo_test_2.csv", "data/data_set/ex1_pseudo_test_3.csv", "data/data_set/ex1_pseudo_test_4.csv"])
+	parser.add_argument("--X_train", nargs='+', default=[ "data/embeddings/fasttext/pseudo/ex1_pseudo_train_1.csv", "data/embeddings/fasttext/pseudo/ex1_pseudo_train_2.csv", "data/embeddings/fasttext/pseudo/ex1_pseudo_train_3.csv", "data/embeddings/fasttext/pseudo/ex1_pseudo_train_4.csv"])
+	parser.add_argument("--y_train", nargs='+', default = [ "data/data_set/ex1_pseudo_train_1.csv", "data/data_set/ex1_pseudo_train_2.csv", "data/data_set/ex1_pseudo_train_3.csv", "data/data_set/ex1_pseudo_train_4.csv"])
+	parser.add_argument("--X_test", nargs='+', default=[ "data/embeddings/fasttext/pseudo/ex1_pseudo_test_1.csv", "data/embeddings/fasttext/pseudo/ex1_pseudo_test_2.csv", "data/embeddings/fasttext/pseudo/ex1_pseudo_test_3.csv", "data/embeddings/fasttext/pseudo/ex1_pseudo_test_4.csv"])
+	parser.add_argument("--y_test", nargs='+', default = [ "data/data_set/ex1_pseudo_test_1.csv", "data/data_set/ex1_pseudo_test_2.csv", "data/data_set/ex1_pseudo_test_3.csv", "data/data_set/ex1_pseudo_test_4.csv"])
 	parser.add_argument("-o", "--output_path", default="data/output/predictions")
-	parser.add_argument("-k", "--key", default="PREP")
-	parser.add_argument("-m", "--model", default="BERT")
+	parser.add_argument("-k", "--key", default="")
+	parser.add_argument("-m", "--model", default="fastText")
 	parser.add_argument("-s", "--split", default="pseudo")
 	parser. add_argument("-e", "--experiment", default="ex1")
 	args = parser.parse_args()
