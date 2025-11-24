@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from collections import Counter
 
 
-def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_path, key, model, split, experiment):
+def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_path, key, model, split, experiment, decremental):
 
 	#random.seed(seed)
 	all_layers = []
@@ -122,7 +122,7 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 		
 	# salva risultati in CSV
 	df = pd.DataFrame(all_layers)
-	csv_name = f"{model}_{experiment}_{key}_{split}_avg_metrics.csv"
+	csv_name = f"{model}_{experiment}_{key}_{split}_{decremental}_avg_metrics.csv"
 	csv_path = os.path.join(output_path, csv_name)
 	df.to_csv(csv_path, index=False)
 	print(f"\nRisultati medi salvati in: {csv_path}")
@@ -167,7 +167,7 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 		df_preds.insert(0, "gold", df_test["construction"].tolist())
 
 		# Salva CSV
-		csv_path = os.path.join(output_path, f"{model}_{experiment}_{key}_{split}_split{split_idx}_predictions.csv")
+		csv_path = os.path.join(output_path, f"{model}_{experiment}_{key}_{split}_split{split_idx}_{decremental}_predictions.csv")
 		df_preds.to_csv(csv_path, index=False)
 		print(f"    Predizioni salvate in: {csv_path}")
 
@@ -234,7 +234,7 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 
 
 	# Salva grafico
-	img_name = f"{model}_{experiment}_{key}_{split}_metrics.png"
+	img_name = f"{model}_{experiment}_{key}_{split}_{decremental}_metrics.png"
 	img_path = os.path.join(output_path, img_name)
 	plt.savefig(img_path, dpi=300)
 	print(f"Grafico salvato in: {img_path}\n")
@@ -242,15 +242,16 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--seed", default=42, type=int)
-	parser.add_argument("--X_train", nargs='+', default=[ "data/embeddings/fasttext/pseudo/ex1_pseudo_train_1.csv", "data/embeddings/fasttext/pseudo/ex1_pseudo_train_2.csv", "data/embeddings/fasttext/pseudo/ex1_pseudo_train_3.csv", "data/embeddings/fasttext/pseudo/ex1_pseudo_train_4.csv"])
-	parser.add_argument("--y_train", nargs='+', default = [ "data/data_set/ex1_pseudo_train_1.csv", "data/data_set/ex1_pseudo_train_2.csv", "data/data_set/ex1_pseudo_train_3.csv", "data/data_set/ex1_pseudo_train_4.csv"])
-	parser.add_argument("--X_test", nargs='+', default=[ "data/embeddings/fasttext/pseudo/ex1_pseudo_test_1.csv", "data/embeddings/fasttext/pseudo/ex1_pseudo_test_2.csv", "data/embeddings/fasttext/pseudo/ex1_pseudo_test_3.csv", "data/embeddings/fasttext/pseudo/ex1_pseudo_test_4.csv"])
-	parser.add_argument("--y_test", nargs='+', default = [ "data/data_set/ex1_pseudo_test_1.csv", "data/data_set/ex1_pseudo_test_2.csv", "data/data_set/ex1_pseudo_test_3.csv", "data/data_set/ex1_pseudo_test_4.csv"])
-	parser.add_argument("-o", "--output_path", default="data/output/predictions")
-	parser.add_argument("-k", "--key", default="")
-	parser.add_argument("-m", "--model", default="fastText")
-	parser.add_argument("-s", "--split", default="pseudo")
+	parser.add_argument("--X_train", nargs='+', default=[ "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_0.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_1.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_2.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_3.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_train_4.pkl"])
+	parser.add_argument("--y_train", nargs='+', default = [ "data/data_set/control/ex1_simple_train_0.csv", "data/data_set/control/ex1_simple_train_1.csv", "data/data_set/control/ex1_simple_train_2.csv", "data/data_set/control/ex1_simple_train_3.csv", "data/data_set/control/ex1_simple_train_4.csv"])
+	parser.add_argument("--X_test", nargs='+', default=[ "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_0.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_1.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_2.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_3.pkl", "data/output/embeddings/simple/BERT_embedding_UNK_ex1_simple_test_4.pkl"])
+	parser.add_argument("--y_test", nargs='+', default = [ "data/data_set/control/ex1_simple_test_0.csv", "data/data_set/control/ex1_simple_test_1.csv", "data/data_set/control/ex1_simple_test_2.csv", "data/data_set/control/ex1_simple_test_3.csv", "data/data_set/control/ex1_simple_test_4.csv"])
+	parser.add_argument("-o", "--output_path", default="data/output/predictions/control")
+	parser.add_argument("-k", "--key", default="UNK")
+	parser.add_argument("-m", "--model", default="BERT")
+	parser.add_argument("-s", "--split", default="simple")
 	parser. add_argument("-e", "--experiment", default="ex1")
+	parser. add_argument("-d", "--decremental", default="")
 	args = parser.parse_args()
 
 
@@ -264,5 +265,6 @@ if __name__ == "__main__":
 		args.key,
 		args.model,
 		args.split,
-		args.experiment
+		args.experiment,
+		args.decremental
 	)
