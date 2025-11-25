@@ -293,8 +293,8 @@ if __name__ == "__main__":
 
 		random.shuffle(train_file)
 		random.shuffle(test_file)
-		write_csv(f"data/data_set/simple/ex1_simple_train_{it}.csv", train_file)
-		write_csv(f"data/data_set/simple/ex1_simple_test_{it}.csv", test_file)
+		write_csv(f"data/data_set/ex1/simple/full/ex1_simple_train_{it}.csv", train_file)
+		write_csv(f"data/data_set/ex1/simple/full/ex1_simple_test_{it}.csv", test_file)
 
 	# === DISTRACTOR SETTING ===
 	lemmi, lemmi_tot,\
@@ -392,62 +392,51 @@ if __name__ == "__main__":
 		print(f"Setting 'OTHER', iter {it}, train: {train_curr}, TOT={sum(train_curr.values())}")
 		print(f"Setting 'OTHER', iter {it}, test: {test_curr}, TOT={sum(test_curr.values())}")
 
+		train_file = []
+		test_file = []
 
-	#     train_curr = {"Ca": 0, "Csu": 0, "Da":0, "Dsu": 0}
-	#     test_curr = {"Ca": 0, "Da": 0, "Csu": 0, "Dsu": 0}
-	#     train_curr_lemmi = {"Ca": [], "Csu": [], "Da":[],  "Dsu": []}
-	#     test_curr_lemmi = {"Ca": [], "Da": [], "Csu": [], "Dsu": []}
+		populate_split(costruzioni_A, train_curr_lemmi["Ca"], train_file,
+									test_curr_lemmi["Ca"], test_file)
+		populate_split(costruzioni_SU, train_curr_lemmi["Csu"], train_file,
+									test_curr_lemmi["Csu"], test_file)
+		# curr_len_train = len(train_file)
+		populate_split(distrattori_A, train_curr_lemmi["Da"], train_file,
+									test_curr_lemmi["Da"], test_file)
+		# n_distrattori_A = len(train_file) - curr_len_train
+		# curr_len_train = len(train_file)
+		populate_split(distrattori_SU, train_curr_lemmi["Dsu"], train_file,
+									test_curr_lemmi["Dsu"], test_file)
+		# n_distrattori_SU = len(train_file) - curr_len_train
 
-	#     for orig_lemmas, counts, lemmas, label, max_n in [(train_lemmi, train_curr, train_curr_lemmi, "Ca", 120),
-	#                                                     (train_lemmi, train_curr, train_curr_lemmi, "Csu", 120),
-	#                                                     (train_lemmi, train_curr, train_curr_lemmi, "Da", 12000),
-	#                                                     (train_lemmi, train_curr, train_curr_lemmi, "Dsu", 12000),
-	#                                                     (test_lemmi, test_curr, test_curr_lemmi, "Ca", 30),
-	#                                                     (test_lemmi, test_curr, test_curr_lemmi, "Csu", 30),
-	#                                                     (test_lemmi, test_curr, test_curr_lemmi, "Da", 30),
-	#                                                     (test_lemmi, test_curr, test_curr_lemmi, "Dsu", 30)]:
-	#         i = 0
-	#         category, preposition = label[0], label[1:]
-	#         while i<len(orig_lemmas[category]) and counts[label] <= max_n:
-	#             lemma, count_a, count_su = orig_lemmas[category][i]
-	#             if preposition == "a":
-	#                 counts[label] += count_a
-	#                 if count_a > 0:
-	#                     lemmas[label].append(lemma)
-	#             else:
-	#                 counts[label] += count_su
-	#                 if count_su > 0:
-	#                     lemmas[label].append(lemma)
-	#             i += 1
 
-	#     train_file = []
-	#     test_file = []
+		# train_file = []
+		# test_file = []
 
-	#     populate_split(costruzioni_A, train_curr_lemmi["Ca"], train_file,
-	#                                 test_curr_lemmi["Ca"], test_file)
-	#     populate_split(costruzioni_SU, train_curr_lemmi["Csu"], train_file,
-	#                                 test_curr_lemmi["Csu"], test_file)
-	#     curr_len_train = len(train_file)
-	#     populate_split(distrattori_A, train_curr_lemmi["Da"], train_file,
-	#                                 test_curr_lemmi["Da"], test_file,
-	#                                 add_filter_train=lambda x: x["Type"] in ["verbal", "NsuNgiù"])
-	#     n_distrattori_A = len(train_file) - curr_len_train
-	#     curr_len_train = len(train_file)
-	#     populate_split(distrattori_SU, train_curr_lemmi["Dsu"], train_file,
-	#                                 test_curr_lemmi["Dsu"], test_file,
-	#                                 add_filter_train=lambda x: x["Type"] in ["verbal", "NsuNgiù"])
-	#     n_distrattori_SU = len(train_file) - curr_len_train
+		# populate_split(costruzioni_A, train_curr_lemmi["Ca"], train_file,
+		#                             test_curr_lemmi["Ca"], test_file)
+		# populate_split(costruzioni_SU, train_curr_lemmi["Csu"], train_file,
+		#                             test_curr_lemmi["Csu"], test_file)
+		# curr_len_train = len(train_file)
+		# populate_split(distrattori_A, train_curr_lemmi["Da"], train_file,
+		#                             test_curr_lemmi["Da"], test_file,
+		#                             add_filter_train=lambda x: x["Type"] in ["verbal", "NsuNgiù"])
+		# n_distrattori_A = len(train_file) - curr_len_train
+		# curr_len_train = len(train_file)
+		# populate_split(distrattori_SU, train_curr_lemmi["Dsu"], train_file,
+		#                             test_curr_lemmi["Dsu"], test_file,
+		#                             add_filter_train=lambda x: x["Type"] in ["verbal", "NsuNgiù"])
+		# n_distrattori_SU = len(train_file) - curr_len_train
 
 	#     for el in distrattori_A:
 	#         if el['noun'] in train_curr_lemmi["Da"] and el["Type"] in ["PNPN"] and n_distrattori_A < 240:
 	#             train_file.append(el)
 	#             n_distrattori_A += 1
 
-	#     random.shuffle(train_file)
-	#     random.shuffle(test_file)
+		random.shuffle(train_file)
+		random.shuffle(test_file)
 
-	#     write_csv(f"data/data_set/ex1_other_train_{it}.csv", train_file)
-	#     write_csv(f"data/data_set/ex1_other_test_{it}.csv", test_file)
+		write_csv(f"data/data_set/ex1/other/full/ex1_other_train_{it}.csv", train_file)
+		write_csv(f"data/data_set/ex1/other/full/ex1_other_test_{it}.csv", test_file)
 
 	# for it in range(_NFOLDS):
 	#     random.shuffle(lemmi)
