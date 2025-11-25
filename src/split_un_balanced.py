@@ -195,7 +195,7 @@ def split_rows_type_per_type(rows, train_ratio):
 if __name__ == "__main__":
 
 	_NFOLDS = 5
-	random.seed(763)
+	random.seed(1362)
 	costruzioni_A_file = "data/source/A_construction_max30.csv"
 	costruzioni_SU_file = "data/source/SU_construction_max30.csv"
 
@@ -293,8 +293,8 @@ if __name__ == "__main__":
 
 		random.shuffle(train_file)
 		random.shuffle(test_file)
-		write_csv(f"data/data_set/ex1/simple/full/ex1_simple_train_{it}.csv", train_file)
-		write_csv(f"data/data_set/ex1/simple/full/ex1_simple_test_{it}.csv", test_file)
+		write_csv(f"data/data_set/ex_1/simple/full/ex1_simple_train_{it}.csv", train_file)
+		write_csv(f"data/data_set/ex_1/simple/full/ex1_simple_test_{it}.csv", test_file)
 
 	# === DISTRACTOR SETTING ===
 	lemmi, lemmi_tot,\
@@ -435,8 +435,8 @@ if __name__ == "__main__":
 		random.shuffle(train_file)
 		random.shuffle(test_file)
 
-		write_csv(f"data/data_set/ex1/other/full/ex1_other_train_{it}.csv", train_file)
-		write_csv(f"data/data_set/ex1/other/full/ex1_other_test_{it}.csv", test_file)
+		write_csv(f"data/data_set/ex_1/other/full/ex1_other_train_{it}.csv", train_file)
+		write_csv(f"data/data_set/ex_1/other/full/ex1_other_test_{it}.csv", test_file)
 
 	# for it in range(_NFOLDS):
 	#     random.shuffle(lemmi)
