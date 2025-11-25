@@ -51,6 +51,6 @@ def process_file(model_id, input_csv, output_path, prefix="BERT"):
 
 if __name__ == "__main__":
     model_id = "dbmdz/bert-base-italian-cased"
-    input_csv = "data/source/SU_distractor_filtrato.csv"
+    input_csv = "data/source/gold.csv"
     output_path = "data/output/MASK"
     process_file(model_id, input_csv, output_path)

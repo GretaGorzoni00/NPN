@@ -7,7 +7,7 @@ import sys
 import os
 import pickle
 
-def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_path, split):
+def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_path, split, perturbed):
 	
 	
 		# === FUNZIONE PER SALVARE EMBEDDINGS ===
@@ -71,20 +71,67 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
    
 			for _, line in df.iterrows():
 		
-				tokens = line["costr"].strip().split(" ")   
-	
-				lemma1, prep, lemma2 = line["costr"].strip().split(" ")
-				vec_constr = lemma1 + " [UNK] " + lemma2
-				sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
-				sentence_prediction = line["context_pre"] + " " + lemma1  + " [MASK] " + lemma2 + " " + line["context_post"]
-				sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
+				tokens = line["costr"].strip().split(" ")
 
-				posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])
+	
+				if perturbed == "no":
+	
+	
+					lemma1, prep, lemma2 = line["costr"].strip().split(" ")
+					vec_constr = lemma1 + " [UNK] " + lemma2
+					sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
+					sentence_prediction = line["context_pre"] + " " + lemma1  + " [MASK] " + lemma2 + " " + line["context_post"]
+					sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
+
+					posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])
 				# sentence_orig_nospace = [x for x in  line["context_pre"] if not x == " "] + [x for x in  line["costr"] if not x == " "]
 				# print("\n\n")
 				# print(''.join(sentence_orig_nospace))
 				# print(sentence_orig_nospace[posizione_preposizione])
-				# input()
+				# input()]
+	
+				if perturbed == "NNP":
+	
+					lemma1, lemma2, prep = line["costr"].strip().split(" ")
+					vec_constr = lemma1 + lemma2 + " [UNK] "
+					sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
+					sentence_prediction = line["context_pre"] + " " + lemma1  + lemma2 + " [MASK] " + line["context_post"]
+					sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
+
+					posizione_preposizione = len(lemma1) + len(lemma2) + len([x for x in line["context_pre"] if not x == " "])
+	
+
+				if perturbed == "PNN":
+	
+					prep, lemma1, lemma2 = line["costr"].strip().split(" ")
+					vec_constr = " [UNK] " + lemma1 + lemma2
+					sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
+					sentence_prediction = line["context_pre"] + " " + " [MASK] " + lemma1 + lemma2 + line["context_post"]
+					sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
+
+					posizione_preposizione = len([x for x in line["context_pre"] if not x == " "])
+	 
+	 
+				if perturbed == "PN":
+	
+					prep, lemma1 = line["costr"].strip().split(" ")
+					vec_constr = " [UNK] " + lemma1 + lemma2
+					sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
+					sentence_prediction = line["context_pre"] + " " + " [MASK] " + lemma1 + line["context_post"]
+					sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
+
+					posizione_preposizione = len([x for x in line["context_pre"] if not x == " "])
+	 
+	 
+				if perturbed == "NP":
+	
+					lemma1, prep = line["costr"].strip().split(" ")
+					vec_constr = lemma1 + " [UNK] "
+					sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
+					sentence_prediction = line["context_pre"] + " " + lemma1 + " [MASK] " + line["context_post"]
+					sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
+
+					posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])
 
 				#itera su ogni riga del data set ricomponendo la frase con la costruzione modificata UNK
 				inputs = tokenizer(sentence, return_tensors="pt")
@@ -186,5 +233,6 @@ if __name__ == "__main__":
 	parser.add_argument("--test", nargs="+", default = ["data/data_set/ex1_pseudo_test_0.csv", "data/data_set/ex1_pseudo_test_1.csv", "data/data_set/ex1_pseudo_test_2.csv", "data/data_set/ex1_pseudo_test_3.csv", "data/data_set/ex1_pseudo_test_4.csv"])
 	parser.add_argument("-o", "--output_path", default = "data/output/embeddings")
 	parser.add_argument("-s", "--split", default = "pseudo")
+	parser.add_argument("-p", "--perturbed", default = "no")
 	args = parser.parse_args()
-	main(args.model, args.prefix, args.tokenizer_path, args.train, args.test, args.output_path, args.split)
+	main(args.model, args.prefix, args.tokenizer_path, args.train, args.test, args.output_path, args.split, args.perturbed)
