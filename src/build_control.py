@@ -8,7 +8,10 @@ from sklearn.metrics import pairwise_distances
 from scipy.spatial.distance import cosine
 import random
 
+# TODO: AGGIUNGERE CONSTRAINT SU YES/NO
+
 random.seed(2542)
+_SIMILARITY = 0.7
 
 words = [x.strip() for x in open("/Users/ludovica/Documents/projects/NPN/data/embeddings/fasttext/simple/lemmas_tot.txt").readlines()]
 
@@ -21,16 +24,10 @@ A = np.array([model[word] for word in words])
 
 dist_out = 1-pairwise_distances(A, metric="cosine")
 
-# for i, word in enumerate(words):
-#     for j, word2 in enumerate(words):
-#         if word2>=word:
-#             print(f"{word},{word2},{dist_out[i][j]}")
-
-
 files_train = ["data/data_set/ex1_simple_train_0.csv", "data/data_set/ex1_simple_train_1.csv", "data/data_set/ex1_simple_train_2.csv", "data/data_set/ex1_simple_train_3.csv", "data/data_set/ex1_simple_train_4.csv"]
 files_test = ["data/data_set/ex1_simple_test_0.csv", "data/data_set/ex1_simple_test_1.csv", "data/data_set/ex1_simple_test_2.csv", "data/data_set/ex1_simple_test_3.csv", "data/data_set/ex1_simple_test_4.csv"]
-control_train = ["data/data_set/control/ex1_simple_train_0.csv", "data/data_set/control/ex1_simple_train_1.csv", "data/data_set/control/ex1_simple_train_2.csv", "data/data_set/control/ex1_simple_train_3.csv", "data/data_set/control/ex1_simple_train_4.csv"]
-control_test = ["data/data_set/control/ex1_simple_test_0.csv", "data/data_set/control/ex1_simple_test_1.csv", "data/data_set/control/ex1_simple_test_2.csv", "data/data_set/control/ex1_simple_test_3.csv", "data/data_set/control/ex1_simple_test_4.csv"]
+control_train = [f"data/data_set/control/{_SIMILARITY}/ex1_simple_train_0.csv", f"data/data_set/control/{_SIMILARITY}//ex1_simple_train_1.csv", f"data/data_set/control/{_SIMILARITY}/ex1_simple_train_2.csv", f"data/data_set/control/{_SIMILARITY}/ex1_simple_train_3.csv", f"data/data_setcontrol/{_SIMILARITY}/ex1_simple_train_4.csv"]
+control_test = [f"data/data_set/control/{_SIMILARITY}/ex1_simple_test_0.csv", f"data/data_set/control/{_SIMILARITY}/ex1_simple_test_1.csv", f"data/data_set/control/{_SIMILARITY}/ex1_simple_test_2.csv", f"data/data_set/control/{_SIMILARITY}/ex1_simple_test_3.csv", f"data/data_set/control/{_SIMILARITY}/ex1_simple_test_4.csv"]
 
 for train, test, c_train, c_test in zip(files_train, files_test, control_train, control_test):
 	assigned = {}
@@ -52,7 +49,7 @@ for train, test, c_train, c_test in zip(files_train, files_test, control_train, 
 					if p > 0.5:
 						label = "yes"
 					noun_id = word_to_id[noun]
-					similar_items = [id_to_word[i] for i, el in enumerate(dist_out[noun_id]) if el > 0.5]
+					similar_items = [id_to_word[i] for i, el in enumerate(dist_out[noun_id]) if el > _SIMILARITY]
 					for element in similar_items:
 						assigned[element] = label
 
@@ -69,10 +66,3 @@ for train, test, c_train, c_test in zip(files_train, files_test, control_train, 
 
 		for row in csvtest:
 			csvtest_out.writerow(row)
-
-
-
-
-
-# emb_train = pd.read_csv(X_train_path, header=None, sep=" ")
-

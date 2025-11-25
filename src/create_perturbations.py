@@ -17,7 +17,6 @@ for filename in sys.argv[1:]:
     		for x in perturbations
         }
 		for row in csvfile:
-
 			noun1, prep, noun2 = row["costr"].strip().split(" ")
 			for x in writers:
 				new_costr = row["costr"]

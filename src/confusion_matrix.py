@@ -8,7 +8,7 @@ output_path = "data/output/predictions"
 model = "BERT"
 experiment = "ex1"
 key = "UNK"
-split_name = "other"
+split_name = "simple"
 
 n_splits = 5
 n_layers = 12
@@ -59,4 +59,3 @@ for split_idx in range(n_splits):
 
 plt.tight_layout()
 plt.savefig(f"{output_path}/{model}_{experiment}_{key}_{split_name}_confusion_matrix", dpi=300)
-plt.show()
