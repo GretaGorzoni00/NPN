@@ -570,7 +570,3 @@ if __name__ == "__main__":
 
         write_csv(f"data/data_set/ex1_pseudo_train_{it}.csv", train_file)
         write_csv(f"data/data_set/ex1_pseudo_test_{it}.csv", test_file)
-
-
-
-
