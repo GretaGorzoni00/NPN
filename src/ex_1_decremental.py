@@ -79,6 +79,7 @@ train_sizes = [240, 120, 60]
 # csv_pattern="*pseudo_train*.csv"
 # emb_pattern="*train*"
 
+<<<<<<< HEAD
 # #26/11 PROBE SIMPLE 
 
 # dataset_folder =  "data/data_set/ex_1/simple/full/"
@@ -103,6 +104,14 @@ dataset_folder =  "data/data_set/ex_1/other/full/"
 embeddings_folder = "data/embeddings/bert/other/full/"
 output_folder = "data/data_set/ex_1/other/sampled/"
 output_emb_folder = "data/embeddings/bert/other/sampled/"
+=======
+# #25/11 PROBE SIMPLE UNK
+
+dataset_folder =  "data/data_set/simple/"
+embeddings_folder = "data/output/embeddings/simple_dataset/simple/"
+output_folder = "data/data_set/simple/sampled/"
+output_emb_folder = "data/output/embeddings/simple_dataset/sampled/"
+>>>>>>> 8b754219b9323d04af46193994616b1450d1c693
 
 key_values = ["UNK", "CLS", "PREP"]
 
@@ -112,4 +121,7 @@ for k in key_values:
 	emb_pattern="*" + k + "*train*.pkl"
 
 	decremental_training.main(dataset_folder, embeddings_folder, output_folder, output_emb_folder, train_sizes, csv_pattern, emb_pattern, k)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8b754219b9323d04af46193994616b1450d1c693
