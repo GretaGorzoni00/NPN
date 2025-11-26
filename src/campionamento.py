@@ -3,10 +3,10 @@ import os
 import random
 from collections import defaultdict
 
-input_files = ["data/source/SU_distractor.csv",
-            "data/source/A_distractor.csv",
-            "data/source/SU_construction.csv",
-            "data/source/A_construction.csv"]
+input_files = ["data/dataset_construction/SU_distractor.csv",
+            "data/dataset_construction/A_distractor.csv",
+            "data/dataset_construction/SU_construction.csv",
+            "data/dataset_construction/A_construction.csv"]
 
 for input_file in input_files:
     # === Parametri ===
@@ -15,8 +15,9 @@ for input_file in input_files:
     max_per_lemma = 30
 
     # === Costruzione nome file output ===
-    base, ext = os.path.splitext(input_file)
-    output_file = f"{base}_filtrato{ext}"
+    basename = os.path.basename(input_file)
+    base, ext = os.path.splitext(basename)
+    output_file = f"data/source/{base}_max{max_per_lemma}{ext}"
 
     # === Dizionario per salvare righe per lemma ===
     lemma_rows = defaultdict(list)
