@@ -121,11 +121,21 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 		all_layers.append(layer_results)
 		
 	# salva risultati in CSV
+ 
+	if decremental == "":
+		sampled = "full"
+	else:
+		sampled = "sampled"
+ 
 	df = pd.DataFrame(all_layers)
-	csv_name = f"{model}_{experiment}_{key}_{split}_{decremental}_avg_metrics.csv"
-	csv_path = os.path.join(output_path, csv_name)
+	csv_name = f"{model}_{experiment}_{key}_{decremental}_avg_metrics.csv"
+	output_path_metrics = output_path + f"metrics/{split}/{sampled}/"
+	csv_path = os.path.join(output_path_metrics, csv_name)
 	df.to_csv(csv_path, index=False)
 	print(f"\nRisultati medi salvati in: {csv_path}")
+ 
+
+ 
  
 	# === SALVA LE PREDIZIONI PER OGNI SPLIT E LAYER ===
 	print("\nSalvataggio predizioni per ogni split e layer...")
@@ -167,7 +177,16 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 		df_preds.insert(0, "gold", df_test["construction"].tolist())
 
 		# Salva CSV
-		csv_path = os.path.join(output_path, f"{model}_{experiment}_{key}_{split}_split{split_idx}_{decremental}_predictions.csv")
+  
+
+		if decremental == "":
+			sampled = "full"
+		else:
+			sampled = "sampled"
+  
+  
+		output_path_pred = output_path + f"predictions/{split}/{sampled}/"
+		csv_path = os.path.join(output_path_pred, f"{model}_{experiment}_{key}_split{split_idx}_{decremental}_predictions.csv")
 		df_preds.to_csv(csv_path, index=False)
 		print(f"    Predizioni salvate in: {csv_path}")
 
@@ -233,9 +252,14 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 	plt.tight_layout()
 
 
+	if decremental == "":
+		sampled = "full"
+	else:
+		sampled = "sampled"
 	# Salva grafico
-	img_name = f"{model}_{experiment}_{key}_{split}_{decremental}_metrics.png"
-	img_path = os.path.join(output_path, img_name)
+	img_name = f"{model}_{experiment}_{key}_{decremental}_metrics.png"
+	output_path_graph = output_path + f"graphs/{split}/{sampled}"
+	img_path = os.path.join(output_path_graph, img_name)
 	plt.savefig(img_path, dpi=300)
 	print(f"Grafico salvato in: {img_path}\n")
 

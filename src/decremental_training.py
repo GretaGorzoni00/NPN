@@ -20,17 +20,11 @@ def stratified_indices(df, n):
     for construction in ["yes", "no"]:
         for prep in ["su", "a"]:
             subset = df[(df["construction"] == construction) & (df["preposition"] == prep)]
-<<<<<<< HEAD
             n_to_sample = min(len(subset), n_per_comb)
             if n_to_sample == 0:
                 # se non ci sono righe, salta questa combinazione
                 continue
             sampled_idx = subset.sample(n=n_to_sample, random_state=42).index.tolist()
-=======
-            if len(subset) < n_per_comb:
-                raise ValueError(f"Non ci sono abbastanza esempi per {construction}/{prep}: {len(subset)} < {n_per_comb}")
-            sampled_idx = subset.sample(n=n_per_comb, random_state=42).index.tolist()
->>>>>>> 8b754219b9323d04af46193994616b1450d1c693
             indices.extend(sampled_idx)
     return indices
 
