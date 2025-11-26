@@ -21,12 +21,11 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 				row_data[col_name] = layer_emb.tolist()
 			rows.append(row_data)
 		df_csv = pd.DataFrame(rows)
-		split_dir = os.path.join(os.getcwd(), output_path, split)
-		os.makedirs(split_dir, exist_ok=True)
+		os.makedirs(output_path, exist_ok=True)
 
 		base_name = f"{prefix}_embedding_{key}_{os.path.basename(source_file).replace('.csv', '')}"
-		csv_path = os.path.join(split_dir, f"{base_name}.csv")
-		pkl_path = os.path.join(split_dir, f"{base_name}.pkl")
+		csv_path = os.path.join(output_path, f"{base_name}.csv")
+		pkl_path = os.path.join(output_path, f"{base_name}.pkl")
 
 		# Salva i file
 		df_csv.to_csv(csv_path, index=False)

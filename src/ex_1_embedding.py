@@ -7,21 +7,36 @@ import embedding
 model = "dbmdz/bert-base-italian-cased"
 prefix = "BERT"
 tokenizer_path = "data/tokenizer"
-output_path = "data/output/embeddings/simple_dataset"
 
 
-# 1. SIMPLE 
 
+# 1. SIMPLE FULL 26/11
+
+output_path = "data/embeddings/bert/simple/full"
 split = "simple"
 perturbed ="no"
-PATH_INPUT_TEST = "data/data_set/simple/"
-PATH_INPUT_TRAINING = "data/data_set/simple/"
+PATH_INPUT_TEST = "data/data_set/ex_1/simple/full/"
+PATH_INPUT_TRAINING = "data/data_set/ex_1/simple/full/"
 test_files = sorted(glob.glob(PATH_INPUT_TEST+"*simple_test*"))
 train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*simple_train*"))
 
 embedding.main(model,
         prefix, tokenizer_path, train_files,test_files,
         output_path, split , perturbed)
+
+# # 2. OTHER FULL 26/11
+
+# output_path = "data/embeddings/bert/other/full"
+# split = "other"
+# perturbed ="no"
+# PATH_INPUT_TEST = "data/data_set/ex_1/other/full/"
+# PATH_INPUT_TRAINING = "data/data_set/ex_1/other/full/"
+# test_files = sorted(glob.glob(PATH_INPUT_TEST+"*other_test*"))
+# train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*other_train*"))
+
+# embedding.main(model,
+#         prefix, tokenizer_path, train_files,test_files,
+#         output_path, split , perturbed)
 
 
 # # 1. PERTURBED on SIMPLE NNP
