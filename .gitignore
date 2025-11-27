@@ -5,3 +5,6 @@
 src/lemmi_compatti.py
 
 data_set/embeddings/
+
+
+*__pycache__*
