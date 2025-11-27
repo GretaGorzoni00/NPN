@@ -514,5 +514,5 @@ if __name__ == "__main__":
 		random.shuffle(train_file)
 		random.shuffle(test_file)
 
-		write_csv(f"data/data_set/ex_1/pseudo/full/ex1_other_train_{it}.csv", train_file)
-		write_csv(f"data/data_set/ex_1/pseudo/full/ex1_other_test_{it}.csv", test_file)
+		write_csv(f"data/data_set/ex_1/pseudo/full/ex1_pseudo_train_{it}.csv", train_file)
+		write_csv(f"data/data_set/ex_1/pseudo/full/ex1_pseudo_test_{it}.csv", test_file)

@@ -538,20 +538,52 @@ _OUTPUT_PATH = "data/output/predictions/simple_dataset/sampled"
 
 # # 25/11 PROBE on SIMPLE FULL
 
+# _OUTPUT_PATH = "data/output/"
+
+# key_values = ["UNK", "CLS", "PREP"]
+
+
+# EMBEDDINGS_FOLDER = "data/embeddings/bert/simple/full/"
+# DATASET_FOLDER = "data/data_set/ex_1/simple/full/"
+
+# y_train_files = sorted(glob.glob(DATASET_FOLDER+"*simple_train*"))
+
+# y_test_files = sorted(glob.glob(DATASET_FOLDER+"*simple_test*"))
+
+# model_name = "BERT"
+# split_name = "simple"
+
+# for k in key_values:
+#         X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*train*.pkl"))
+#         X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*test*.pkl"))
+#         print(X_train_files)
+#         print(X_test_files)
+#         print(y_test_files)
+#         print(y_train_files)
+
+
+#         LR.main(_SEED,
+#                 X_train_files, y_train_files, X_test_files, y_test_files,
+#                 _OUTPUT_PATH, k , model_name, split_name, _EX_NUMBER, "")
+        
+
+
+# # 25/11 PROBE on PSEUDO FULL
+
 _OUTPUT_PATH = "data/output/"
 
 key_values = ["UNK", "CLS", "PREP"]
 
 
-EMBEDDINGS_FOLDER = "data/embeddings/bert/simple/full/"
-DATASET_FOLDER = "data/data_set/ex_1/simple/full/"
+EMBEDDINGS_FOLDER = "data/embeddings/bert/pseudo/full/"
+DATASET_FOLDER = "data/data_set/ex_1/pseudo/full/"
 
-y_train_files = sorted(glob.glob(DATASET_FOLDER+"*simple_train*"))
+y_train_files = sorted(glob.glob(DATASET_FOLDER+"*pseudo_train*"))
 
-y_test_files = sorted(glob.glob(DATASET_FOLDER+"*simple_test*"))
+y_test_files = sorted(glob.glob(DATASET_FOLDER+"*pseudo_test*"))
 
 model_name = "BERT"
-split_name = "simple"
+split_name = "pseudo"
 
 for k in key_values:
         X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*train*.pkl"))

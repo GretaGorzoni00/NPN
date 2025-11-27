@@ -39,15 +39,15 @@ def plot_multiple_metric_files(csv_files, labels, output_path, title=None):
     
 
 csvs = [
-    "data/output/metrics/other/full/BERT_ex1_UNK_other__avg_metrics.csv",
-    "data/output/metrics/other/full/BERT_ex1_CLS_other__avg_metrics.csv",
-    "data/output/metrics/other/full/BERT_ex1_PREP_other__avg_metrics.csv"
+    "data/output/metrics/simple/full/BERT_ex1_UNK__avg_metrics.csv",
+    "data/output/metrics/other/full/BERT_ex1_UNK__avg_metrics.csv",
+    "data/output/metrics/pseudo/full/BERT_ex1_UNK__avg_metrics.csv"
 ]
 
 labels = [
-    "UNK",
-    "CLS",
-    "PREP"
+    "simple",
+    "other",
+    "pseudo"
 ]
 
 plot_multiple_metric_files(

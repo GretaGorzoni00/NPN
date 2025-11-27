@@ -57,17 +57,20 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 
 
 	for train_file, test_file in zip(train_dataset, test_dataset):
-		text_train = pd.read_csv(train_file, sep=";")
-		text_test = pd.read_csv(test_file, sep=";")
+
+		if perturbed == "no":
+			file_pairs = [("train", train_file), ("test", test_file)]
+		else:
+			file_pairs = [("test", test_file)]
 
 		print(f"Processing {train_file} / {test_file}")
 
-		# ciclo su train e test per ogni coppia di file
-		for label, df in [("train", text_train), ("test", text_test)]:
+		for label, current_file in file_pairs:
 
+			df = pd.read_csv(current_file, sep=";")
 			results = []
 			predicted_tokens = []
-   
+
 			for _, line in df.iterrows():
 
 		
@@ -98,11 +101,9 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 
 						
 						if line["construction"] == "no":
-							print("siamo entrati")
-							input()
-							print(line)
-							input()
-          
+
+
+		  
 							lemma1, prep, lemma2 = line["costr"].strip().split(" ")
 							vec_constr = lemma1 + " [UNK] " + lemma2
 							sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
@@ -113,6 +114,7 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 							
 
 						else:
+		  
 							lemma1, lemma2, prep = line["costr"].strip().split(" ")
 							vec_constr = lemma1 + lemma2 + " [UNK] "
 							sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
@@ -122,7 +124,7 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 							posizione_preposizione = len(lemma1) + len(lemma2) + len([x for x in line["context_pre"] if not x == " "])
 			
 
-					if perturbed == "PNN":
+					elif perturbed == "PNN":
 		
 						if line["construction"] == "no":
 							lemma1, prep, lemma2 = line["costr"].strip().split(" ")
@@ -143,7 +145,7 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 							posizione_preposizione = len([x for x in line["context_pre"] if not x == " "])
 			
 			
-					if perturbed == "PN":
+					elif perturbed == "PN":
 
 						if line["construction"] == "no":
 							lemma1, prep, lemma2 = line["costr"].strip().split(" ")
@@ -165,9 +167,11 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 							posizione_preposizione = len([x for x in line["context_pre"] if not x == " "])
 		
 		
-					if perturbed == "NP":
-         
+					elif perturbed == "NP":
+		 
 						if line["construction"] == "no":
+
+
 							lemma1, prep, lemma2 = line["costr"].strip().split(" ")
 							vec_constr = lemma1 + " [UNK] " + lemma2
 							sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
@@ -175,7 +179,7 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 							sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
 
 							posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])
-
+						
 						else:
 		
 							lemma1, prep = line["costr"].strip().split(" ")
@@ -280,7 +284,7 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 			else:
 				
 				output_path_perturbed = output_path+"/"+perturbed
-    
+	
 				save_embeddings(results, "UNK", prefix, output_path_perturbed, split, source_file)
 				save_embeddings(results, "CLS", prefix, output_path_perturbed, split, source_file)
 				save_embeddings(results, "PREP", prefix, output_path_perturbed, split, source_file)
