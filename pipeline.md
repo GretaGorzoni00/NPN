@@ -34,11 +34,24 @@ TODO: aggiungere header all'output
 6. perturbazioni: DA FARE TODO ANCORA
    `python create_perturbations.py [filename_1]... [filename_n]`
 
-7. TODO FASTTEXT
+7. estrazioni vettori fasttext
+   a. git clone https://github.com/facebookresearch/fastText.git
+   b. (con venv attivo) pip install fastText/
+   c. `python fastText/download_model.py it`
+
+   run:
+   `python ./src/get_fasttext.py [cc.it.300.bin] ./data/embeddings/fasttext/simple/ ./data/data_set/ex_1/simple/full/*`
+
+   `python ./src/get_fasttext.py [cc.it.300.bin] ./data/embeddings/fasttext/pseudo/ ./data/data_set/ex_1/pseudo/full/*`
+
+   `python ./src/get_fasttext.py [cc.it.300.bin] ./data/embeddings/fasttext/other/ ./data/data_set/ex_1/other/full/*`
+
+
+
 
 8. TODO CONTROL CLASSIFIER
 
-9. TODO SIMILARITÀ SEMANTICA NECESSARI FASTTEXT
+9.  TODO SIMILARITÀ SEMANTICA NECESSARI FASTTEXT
 
 10. decremento training TODO RIMUOVERE CREAZIONE DATA SET UGAULE PER OGNI KEY SOVRASCRITTA NEL CICLO FOR. CICLO FOR SOLO PER TRAINING EMBEDDING IL DATA SET TRAINIGN SAMPLED PUÒ RESTARE UNICO
    `python src/decremental_training.py`
