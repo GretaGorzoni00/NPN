@@ -21,5 +21,4 @@ for filename in input_files:
 
 		for row in csvfile:
 			noun = row['noun'].strip()
-			fout.write(f"{noun}\t{' '.join([str(x) for x in model['casa']])}\n")
-# print(model['casa'])
+			fout.write(f"{noun}\t{' '.join([str(x) for x in model[noun]])}\n")
