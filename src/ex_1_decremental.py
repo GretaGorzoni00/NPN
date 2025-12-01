@@ -79,21 +79,36 @@ train_sizes = [240, 120, 60]
 # csv_pattern="*pseudo_train*.csv"
 # emb_pattern="*train*"
 
-#26/11 PROBE SIMPLE 
+# #26/11 PROBE SIMPLE 
+
+# dataset_folder =  "data/data_set/ex_1/simple/control_simple/"
+# embeddings_folder = "data/embeddings/bert/simple/control_simple/"
+# output_folder = "data/data_set/ex_1/simple/control_simpled/sampled/"
+# output_emb_folder = "data/embeddings/bert/simple/control_simple/sampled/"
+
+# key_values = ["UNK", "CLS", "PREP"]
+
+# for k in key_values:
+
+# 	csv_pattern="*train*.csv"
+# 	emb_pattern="*" + k + "*train*.pkl"
+
+# 	decremental_training.main(dataset_folder, embeddings_folder, output_folder, output_emb_folder, train_sizes, csv_pattern, emb_pattern, k)
+ 
+ 
+ #26/11 BASEE LINE
 
 dataset_folder =  "data/data_set/ex_1/simple/full/"
-embeddings_folder = "data/embeddings/bert/simple/full/"
+embeddings_folder = "data/embeddings/fasttext/simple/"
 output_folder = "data/data_set/ex_1/simple/sampled/"
-output_emb_folder = "data/embeddings/bert/simple/sampled/"
+output_emb_folder = "data/embeddings/fasttext/simple/sampled/"
 
-key_values = ["UNK", "CLS", "PREP"]
 
-for k in key_values:
 
-	csv_pattern="*train*.csv"
-	emb_pattern="*" + k + "*train*.pkl"
+csv_pattern="*train*.csv"
+emb_pattern="*train*.tsv"
 
-	decremental_training.main(dataset_folder, embeddings_folder, output_folder, output_emb_folder, train_sizes, csv_pattern, emb_pattern, k)
+decremental_training.main(dataset_folder, embeddings_folder, output_folder, output_emb_folder, train_sizes, csv_pattern, emb_pattern, "")
 
  
 # #26/11 PROBE OTHEr

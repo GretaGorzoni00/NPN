@@ -59,7 +59,7 @@ def main(dataset_folder, embeddings_folder, output_folder, output_emb_folder, tr
             with open(emb_file, "rb") as f:
                 emb_list = pickle.load(f)
 
-        elif emb_file.endswith(".csv") or emb_file.endswith(".txt"):
+        elif emb_file.endswith(".csv") or emb_file.endswith(".tsv"):
             # Carica embedding da CSV o txt (righe con vettori separati da spazio o tab)
             df_emb = pd.read_csv(emb_file, header=None, sep=r"\s+")
             emb_list = df_emb.values.tolist()  # converte ogni riga in lista

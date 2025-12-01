@@ -54,25 +54,39 @@ tokenizer_path = "data/tokenizer"
 #         output_path, split , perturbed)
 
 
-# 1. SIMPLE PERTURBED FULL 26/11
+# # 1. SIMPLE PERTURBED FULL 26/11
 
-output_path = "data/embeddings/perturbed/full"
-split = "simple"
+# output_path = "data/embeddings/perturbed/full"
+# split = "simple"
 
-perturbation = ["NNP", "NP", "PN", "PNN"] 
+# perturbation = ["NNP", "NP", "PN", "PNN"] 
 
-PATH_INPUT_TEST = "data/data_set/ex_1/perturbed/full/"
-PATH_INPUT_TRAINING = "data/data_set/ex_1/simple/full/"
+# PATH_INPUT_TEST = "data/data_set/ex_1/perturbed/full/"
+# PATH_INPUT_TRAINING = "data/data_set/ex_1/simple/full/"
 
-for p in perturbation:
-        test_files = sorted(glob.glob(PATH_INPUT_TEST+f"*simple_test*_" +p+ ".csv"))
-        train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*simple_train*"))
+# for p in perturbation:
+#         test_files = sorted(glob.glob(PATH_INPUT_TEST+f"*simple_test*_" +p+ ".csv"))
+#         train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*simple_train*"))
         
-        print(test_files)
-        print(train_files)
+#         print(test_files)
+#         print(train_files)
 
 
-        embedding.main(model,
-                prefix, tokenizer_path, train_files,test_files,
-                output_path, split , p)
+#         embedding.main(model,
+#                 prefix, tokenizer_path, train_files,test_files,
+#                 output_path, split , p)
+
+# 1. SIMPLE FULL 26/11
+
+output_path = "data/embeddings/bert/simple/control_simple/"
+split = "simple"
+perturbed ="no"
+PATH_INPUT_TEST = "data/data_set/ex_1/simple/control_simple/"
+PATH_INPUT_TRAINING = "data/data_set/ex_1/simple/control_simple/"
+test_files = sorted(glob.glob(PATH_INPUT_TEST+"*simple_test*"))
+train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*simple_train*"))
+
+embedding.main(model,
+        prefix, tokenizer_path, train_files,test_files,
+        output_path, split , perturbed)
 

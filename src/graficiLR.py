@@ -22,7 +22,7 @@ def plot_multiple_metric_files(csv_files, labels, output_path, title=None):
 
     plt.xlabel("Layer")
     plt.ylabel("Accuracy")
-    plt.ylim(0.4, 1.0)
+    plt.ylim(0.3, 1.0)
     plt.grid(True)
 
     if title:
@@ -38,16 +38,19 @@ def plot_multiple_metric_files(csv_files, labels, output_path, title=None):
     plt.close()
     
 
+
 csvs = [
-    "data/output/metrics/simple/full/BERT_ex1_UNK__avg_metrics.csv",
-    "data/output/metrics/other/full/BERT_ex1_UNK__avg_metrics.csv",
-    "data/output/metrics/pseudo/full/BERT_ex1_UNK__avg_metrics.csv"
+    "data/output/metrics/simple/control_simple/full/BERT_ex1_UNK___avg_metrics.csv",
+    "data/output/metrics/simple/control_simple/sampled/BERT_ex1_UNK_240__avg_metrics.csv",
+    "data/output/metrics/simple/control_simple/sampled/BERT_ex1_UNK_120__avg_metrics.csv",
+    "data/output/metrics/simple/control_simple/sampled/BERT_ex1_UNK_60__avg_metrics.csv"
 ]
 
 labels = [
-    "simple",
-    "other",
-    "pseudo"
+    "UNK coontrol simple 480",
+    "UNK coontrol simple 240",
+    "UNK coontrol simple 120",
+    "UNK coontrol simple 60"
 ]
 
 plot_multiple_metric_files(

@@ -24,7 +24,8 @@ for filename in sys.argv[1:]:
 		for row in csvfile:
 			noun1, prep, noun2 = row["costr"].strip().split(" ")
 			for x in writers:
-				new_costr = row["costr"]
+				new_row = row.copy()  # <--- QUESTA È LA CHIAVE
+
 				if x == "PNN":
 					new_costr = f"{prep} {noun1} {noun2}"
 				if x == "PN":
@@ -33,6 +34,9 @@ for filename in sys.argv[1:]:
 					new_costr = f"{noun1} {noun2} {prep}"
 				if x == "NP":
 					new_costr = f"{noun1} {prep}"
-				if row["construction"] == "yes":
-					row["costr"] = new_costr
-				writers[x].writerow(row)
+
+				if new_row["construction"] == "yes":
+					new_row["costr"] = new_costr
+
+				new_row["construction"] = "no"
+				writers[x].writerow(new_row)

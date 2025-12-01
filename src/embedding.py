@@ -100,21 +100,9 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 					if perturbed == "NNP":
 
 						
-						if line["construction"] == "no":
+						if line["other_cxn"] == "_":
 
 
-		  
-							lemma1, prep, lemma2 = line["costr"].strip().split(" ")
-							vec_constr = lemma1 + " [UNK] " + lemma2
-							sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
-							sentence_prediction = line["context_pre"] + " " + lemma1  + " [MASK] " + lemma2 + " " + line["context_post"]
-							sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
-
-							posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])
-							
-
-						else:
-		  
 							lemma1, lemma2, prep = line["costr"].strip().split(" ")
 							vec_constr = lemma1 + lemma2 + " [UNK] "
 							sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
@@ -122,11 +110,11 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 							sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
 
 							posizione_preposizione = len(lemma1) + len(lemma2) + len([x for x in line["context_pre"] if not x == " "])
-			
+							
 
-					elif perturbed == "PNN":
-		
-						if line["construction"] == "no":
+						else:
+		  
+
 							lemma1, prep, lemma2 = line["costr"].strip().split(" ")
 							vec_constr = lemma1 + " [UNK] " + lemma2
 							sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
@@ -134,7 +122,11 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 							sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
 
 							posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])
-						else:
+			
+
+					elif perturbed == "PNN":
+		
+						if line["other_cxn"] == "_":
 			
 							prep, lemma1, lemma2 = line["costr"].strip().split(" ")
 							vec_constr = " [UNK] " + lemma1 + lemma2
@@ -143,11 +135,8 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 							sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
 
 							posizione_preposizione = len([x for x in line["context_pre"] if not x == " "])
+						else:
 			
-			
-					elif perturbed == "PN":
-
-						if line["construction"] == "no":
 							lemma1, prep, lemma2 = line["costr"].strip().split(" ")
 							vec_constr = lemma1 + " [UNK] " + lemma2
 							sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
@@ -155,9 +144,11 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 							sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
 
 							posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])
+			
+					elif perturbed == "PN":
+         
+						if line["other_cxn"] == "_":
 
-						else:
-		
 							prep, lemma1 = line["costr"].strip().split(" ")
 							vec_constr = " [UNK] " + lemma1 + lemma2
 							sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
@@ -165,13 +156,9 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 							sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
 
 							posizione_preposizione = len([x for x in line["context_pre"] if not x == " "])
-		
-		
-					elif perturbed == "NP":
-		 
-						if line["construction"] == "no":
 
-
+						else:
+		
 							lemma1, prep, lemma2 = line["costr"].strip().split(" ")
 							vec_constr = lemma1 + " [UNK] " + lemma2
 							sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
@@ -179,13 +166,27 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 							sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
 
 							posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])
-						
-						else:
+		
+		
+					elif perturbed == "NP":
+		 
+						if line["other_cxn"] == "_":
+							
 		
 							lemma1, prep = line["costr"].strip().split(" ")
 							vec_constr = lemma1 + " [UNK] "
 							sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
 							sentence_prediction = line["context_pre"] + " " + lemma1 + " [MASK] " + line["context_post"]
+							sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
+
+							posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])
+						
+						else:
+		
+							lemma1, prep, lemma2 = line["costr"].strip().split(" ")
+							vec_constr = lemma1 + " [UNK] " + lemma2
+							sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
+							sentence_prediction = line["context_pre"] + " " + lemma1  + " [MASK] " + lemma2 + " " + line["context_post"]
 							sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
 
 							posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])

@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from collections import Counter
 
 
-def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_path, key, model, split, experiment, decremental):
+def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_path, key, model, split, experiment, decremental, perturbed):
 
 	#random.seed(seed)
 	all_layers = []
@@ -47,7 +47,7 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 				emb_train = pd.read_csv(X_train_path, header=None, sep=" ")
 				emb_test = pd.read_csv(X_test_path, header=None, sep=" ")
 
-    
+	
 				
 	
 			# --- Se BERT-like, estrai layer specifici ---
@@ -128,7 +128,7 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 		sampled = "sampled"
  
 	df = pd.DataFrame(all_layers)
-	csv_name = f"{model}_{experiment}_{key}_{decremental}_avg_metrics.csv"
+	csv_name = f"{model}_{experiment}_{key}_{decremental}_{perturbed}_avg_metrics.csv"
 	output_path_metrics = output_path + f"metrics/{split}/{sampled}/"
 	csv_path = os.path.join(output_path_metrics, csv_name)
 	df.to_csv(csv_path, index=False)
@@ -186,7 +186,7 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
   
   
 		output_path_pred = output_path + f"predictions/{split}/{sampled}/"
-		csv_path = os.path.join(output_path_pred, f"{model}_{experiment}_{key}_split{split_idx}_{decremental}_predictions.csv")
+		csv_path = os.path.join(output_path_pred, f"{model}_{experiment}_{key}_split{split_idx}_{decremental}_{perturbed}_predictions.csv")
 		df_preds.to_csv(csv_path, index=False)
 		print(f"    Predizioni salvate in: {csv_path}")
 
@@ -257,7 +257,7 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 	else:
 		sampled = "sampled"
 	# Salva grafico
-	img_name = f"{model}_{experiment}_{key}_{decremental}_metrics.png"
+	img_name = f"{model}_{experiment}_{key}_{decremental}_{perturbed}_metrics.png"
 	output_path_graph = output_path + f"graphs/{split}/{sampled}"
 	img_path = os.path.join(output_path_graph, img_name)
 	plt.savefig(img_path, dpi=300)
@@ -274,8 +274,9 @@ if __name__ == "__main__":
 	parser.add_argument("-k", "--key", default="UNK")
 	parser.add_argument("-m", "--model", default="BERT")
 	parser.add_argument("-s", "--split", default="simple")
-	parser. add_argument("-e", "--experiment", default="ex1")
-	parser. add_argument("-d", "--decremental", default="")
+	parser.add_argument("-e", "--experiment", default="ex1")
+	parser.add_argument("-d", "--decremental", default="")
+	parser.add_argument("-p", "--perturbed", default="")
 	args = parser.parse_args()
 
 
@@ -290,5 +291,6 @@ if __name__ == "__main__":
 		args.model,
 		args.split,
 		args.experiment,
-		args.decremental
+		args.decremental,
+		args.perturbed
 	)
