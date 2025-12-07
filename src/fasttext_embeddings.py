@@ -9,6 +9,8 @@ fasttext_model = sys.argv[1]
 output_folder = sys.argv[2]
 input_files = sys.argv[3:]
 
+_FIELD = "noun"
+
 model = fasttext.load_model(fasttext_model)
 
 
@@ -20,5 +22,5 @@ for filename in input_files:
 		csvfile = csv.DictReader(fin, delimiter=";")
 
 		for row in csvfile:
-			noun = row['noun'].strip()
+			noun = row[_FIELD].strip()
 			fout.write(f"{noun}\t{' '.join([str(x) for x in model[noun]])}\n")
