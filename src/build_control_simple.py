@@ -6,7 +6,7 @@ import random
 
 random.seed(2542)
 
-# TODO: AGGIUNGERE CONSTRAINT SU YES/NO
+_FIELD = "noun"
 
 
 files_train = ["data/data_set/ex_1/simple/full/ex1_simple_train_0.csv", "data/data_set/ex_1/simple/full/ex1_simple_train_1.csv", "data/data_set/ex_1/simple/full/ex1_simple_train_2.csv", "data/data_set/ex_1/simple/full/ex1_simple_train_3.csv", "data/data_set/ex_1/simple/full/ex1_simple_train_4.csv"]
@@ -19,7 +19,6 @@ control_test = [f"data/data_set/ex_1/simple/control_simple/ex1_simple_test_0.csv
 for train, test, c_train, c_test in zip(files_train, files_test, control_train, control_test):
 	assigned = {}
 	tot = {"yes": 0, "no": 0}
-	# TOT = 0
 	with open(train) as fin_train, open(test) as fin_test:
 		csvtrain = csv.DictReader(fin_train, delimiter=";")
 		csvtest = csv.DictReader(fin_test, delimiter=";")
@@ -39,7 +38,7 @@ for train, test, c_train, c_test in zip(files_train, files_test, control_train, 
 
 		for csvfile in csvtrain, csvtest:
 			for row in csvfile:
-				noun = row["noun"].strip()
+				noun = row[_FIELD].strip()
 				if noun not in assigned:
 					p = random.random()
 					yes_threshold = tot["yes"]/(tot["yes"]+tot["no"])
