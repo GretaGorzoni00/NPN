@@ -9,7 +9,7 @@ fasttext_model = sys.argv[1]
 output_folder = sys.argv[2]
 input_files = sys.argv[3:]
 
-_FIELD = "noun"
+_FIELD = "pre_lemma"
 
 model = fasttext.load_model(fasttext_model)
 

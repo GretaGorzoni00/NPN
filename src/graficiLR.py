@@ -40,17 +40,20 @@ def plot_multiple_metric_files(csv_files, labels, output_path, title=None):
 
 
 csvs = [
+    "data/output/metrics/simple/control_pre_lemma/full/BERT_ex1_PREP___avg_metrics.csv",
     "data/output/metrics/simple/control_simple/full/BERT_ex1_UNK___avg_metrics.csv",
     "data/output/metrics/simple/control_simple/sampled/BERT_ex1_UNK_240__avg_metrics.csv",
     "data/output/metrics/simple/control_simple/sampled/BERT_ex1_UNK_120__avg_metrics.csv",
     "data/output/metrics/simple/control_simple/sampled/BERT_ex1_UNK_60__avg_metrics.csv"
+    
 ]
 
 labels = [
-    "UNK coontrol simple 480",
-    "UNK coontrol simple 240",
-    "UNK coontrol simple 120",
-    "UNK coontrol simple 60"
+    "control_pre_lemma",
+    "control_stupid",
+    "control_stupid_240",
+    "control_stupid_120",
+    "control_stupid_60"
 ]
 
 plot_multiple_metric_files(

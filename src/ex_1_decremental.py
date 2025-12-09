@@ -98,10 +98,10 @@ train_sizes = [240, 120, 60]
  
  #26/11 BASEE LINE
 
-dataset_folder =  "data/data_set/ex_1/simple/full/"
-embeddings_folder = "data/embeddings/fasttext/simple/"
-output_folder = "data/data_set/ex_1/simple/sampled/"
-output_emb_folder = "data/embeddings/fasttext/simple/sampled/"
+# dataset_folder =  "data/data_set/ex_1/simple/control_pre_lemma/"
+# embeddings_folder = "data/embeddings/bert/control/simple/"
+# output_folder = "data/data_set/ex_1/simple/control_pre_lemma/sampled/"
+# output_emb_folder = "data/embeddings/bert/control/simple/sampled/"
 
 
 
@@ -111,19 +111,19 @@ emb_pattern="*train*.tsv"
 decremental_training.main(dataset_folder, embeddings_folder, output_folder, output_emb_folder, train_sizes, csv_pattern, emb_pattern, "")
 
  
-# #26/11 PROBE OTHEr
-# #non riesco a runnare perché ValueError: Non ci sono abbastanza esempi per no/su: 9 < 60
+#26/11 PROBE OTHEr
+#non riesco a runnare perché ValueError: Non ci sono abbastanza esempi per no/su: 9 < 60
 
-# dataset_folder =  "data/data_set/ex_1/other/full/"
-# embeddings_folder = "data/embeddings/bert/other/full/"
-# output_folder = "data/data_set/ex_1/other/sampled/"
-# output_emb_folder = "data/embeddings/bert/other/sampled/"
+dataset_folder =  "data/data_set/ex_1/simple/control_pre_lemma/"
+embeddings_folder = "data/embeddings/bert/simple/control_simple/"
+output_folder = "data/data_set/ex_1/simple/control_pre_lemma/sampled/"
+output_emb_folder = "data/embeddings/bert/control/simple/sampled/"
 
-# key_values = ["UNK", "CLS", "PREP"]
+key_values = ["UNK", "CLS", "PREP"]
 
-# for k in key_values:
+for k in key_values:
 
-# 	csv_pattern="*train*.csv"
-# 	emb_pattern="*" + k + "*train*.pkl"
+	csv_pattern="*train*.csv"
+	emb_pattern="*" + k + "*train*.pkl"
 
-# 	decremental_training.main(dataset_folder, embeddings_folder, output_folder, output_emb_folder, train_sizes, csv_pattern, emb_pattern, k)
+	decremental_training.main(dataset_folder, embeddings_folder, output_folder, output_emb_folder, train_sizes, csv_pattern, emb_pattern, k)

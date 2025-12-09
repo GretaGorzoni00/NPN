@@ -834,3 +834,20 @@
 2025-11-26 20:41:14,298 - INFO - TEST: Selected lemmas for SU-constructions: scommessa, pista, superficie, aggettivo, barzelletta, granellino, borotalco, segheria, bozzo, colpo
 2025-11-26 20:41:14,298 - INFO - TEST: Selected lemmas for A-distractors: anima, balcone, bocca, braccio, brano, campo, casa, corpo, dorso, fibra, foglia, goccia
 2025-11-26 20:41:14,298 - INFO - TEST: Selected lemmas for SU-distractors: punto, km, volume, bambino, donna, periodo, uomo, bandiera, justin, mano, mille, mente
+2025-12-09 17:48:46,365 - INFO - sampling 5 folds with seed 232
+2025-12-09 17:48:46,369 - INFO - Beginning sampling for setting SIMPLE
+2025-12-09 17:48:46,370 - INFO - Iteration n. 0
+2025-12-09 17:48:46,370 - INFO - Setting 'SIMPLE', iter 0, train: {'juxt-a': 119, 'succ-a': 70, 'succ-su': 61, 'acc-su': 121}, TOT=371
+2025-12-09 17:48:46,370 - INFO - Setting 'SIMPLE', iter 0, test: {'juxt-a': 35, 'succ-a': 11, 'succ-su': 36, 'acc-su': 31}, TOT=113
+2025-12-09 17:48:46,373 - INFO - Iteration n. 1
+2025-12-09 17:48:46,374 - INFO - Setting 'SIMPLE', iter 1, train: {'juxt-a': 121, 'succ-a': 62, 'succ-su': 67, 'acc-su': 122}, TOT=372
+2025-12-09 17:48:46,374 - INFO - Setting 'SIMPLE', iter 1, test: {'juxt-a': 33, 'succ-a': 33, 'succ-su': 17, 'acc-su': 31}, TOT=114
+2025-12-09 17:48:46,376 - INFO - Iteration n. 2
+2025-12-09 17:48:46,377 - INFO - Setting 'SIMPLE', iter 2, train: {'juxt-a': 121, 'succ-a': 61, 'succ-su': 61, 'acc-su': 123}, TOT=366
+2025-12-09 17:48:46,377 - INFO - Setting 'SIMPLE', iter 2, test: {'juxt-a': 33, 'succ-a': 32, 'succ-su': 26, 'acc-su': 31}, TOT=122
+2025-12-09 17:48:46,380 - INFO - Iteration n. 3
+2025-12-09 17:48:46,380 - INFO - Setting 'SIMPLE', iter 3, train: {'juxt-a': 113, 'succ-a': 64, 'succ-su': 51, 'acc-su': 123}, TOT=351
+2025-12-09 17:48:46,380 - INFO - Setting 'SIMPLE', iter 3, test: {'juxt-a': 41, 'succ-a': 16, 'succ-su': 17, 'acc-su': 31}, TOT=105
+2025-12-09 17:48:46,383 - INFO - Iteration n. 4
+2025-12-09 17:48:46,383 - INFO - Setting 'SIMPLE', iter 4, train: {'juxt-a': 120, 'succ-a': 85, 'succ-su': 50, 'acc-su': 121}, TOT=376
+2025-12-09 17:48:46,383 - INFO - Setting 'SIMPLE', iter 4, test: {'juxt-a': 34, 'succ-a': 30, 'succ-su': 33, 'acc-su': 31}, TOT=128
