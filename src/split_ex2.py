@@ -28,7 +28,7 @@ def sample(orig_lemmas, counts_dict, lemmas_dict, category, preposition, max_n):
 # === Scrivere CSV ===
 def write_csv(file_path, rows, delimiter=";"):
 	with open(file_path, "w", encoding="utf-8", newline="") as f:
-		writer = csv.DictWriter(f, delimiter=delimiter, fieldnames=["NPN", "construction", 'preposition',
+		writer = csv.DictWriter(f, delimiter=delimiter, fieldnames=["ID", "NPN", "construction", 'preposition',
 																	'noun', 'pre_lemma', 'context_pre', "costr",
 																	'context_post','number_of_noun',
 																	'Type', "other_cxn",
@@ -226,8 +226,6 @@ if __name__ == "__main__":
 					"succ-a": [],
 					"succ-su":[],
 					"acc-su": []}
-		print(train_curr)
-		print(test_curr)
 		sample(test_lemmi, test_curr, test_curr_lemmi, "juxt", "a", 30)
 		sample(train_lemmi, train_curr, train_curr_lemmi, "succ", "su", 60)
 		sample(test_lemmi, test_curr, test_curr_lemmi, "succ", "su", 15)
@@ -266,5 +264,5 @@ if __name__ == "__main__":
 
 		random.shuffle(train_file)
 		random.shuffle(test_file)
-		write_csv(f"data/data_set/ex_1/simple/full/ex1_simple_train_{it}.csv", train_file)
-		write_csv(f"data/data_set/ex_1/simple/full/ex1_simple_test_{it}.csv", test_file)
+		write_csv(f"data/data_set/ex_2/simple/full/ex2_simple_train_{it}.csv", train_file)
+		write_csv(f"data/data_set/ex_2/simple/full/ex2_simple_test_{it}.csv", test_file)
