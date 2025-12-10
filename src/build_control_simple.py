@@ -6,13 +6,13 @@ import random
 
 random.seed(2542)
 
-_FIELD = "noun"
+_FIELD = "pre_lemma"
 
 
 files_train = ["data/data_set/ex_1/simple/full/ex1_simple_train_0.csv", "data/data_set/ex_1/simple/full/ex1_simple_train_1.csv", "data/data_set/ex_1/simple/full/ex1_simple_train_2.csv", "data/data_set/ex_1/simple/full/ex1_simple_train_3.csv", "data/data_set/ex_1/simple/full/ex1_simple_train_4.csv"]
 files_test = ["data/data_set/ex_1/simple/full/ex1_simple_test_0.csv", "data/data_set/ex_1/simple/full/ex1_simple_test_1.csv", "data/data_set/ex_1/simple/full/ex1_simple_test_2.csv", "data/data_set/ex_1/simple/full/ex1_simple_test_3.csv", "data/data_set/ex_1/simple/full/ex1_simple_test_4.csv"]
-control_train = [f"data/data_set/ex_1/simple/control_simple/ex1_simple_train_0.csv", f"data/data_set/ex_1/simple/control_simple/ex1_simple_train_1.csv", f"data/data_set/ex_1/simple/control_simple/ex1_simple_train_2.csv", f"data/data_set/ex_1/simple/control_simple/ex1_simple_train_3.csv", f"data/data_set/ex_1/simple/control_simple/ex1_simple_train_4.csv"]
-control_test = [f"data/data_set/ex_1/simple/control_simple/ex1_simple_test_0.csv", f"data/data_set/ex_1/simple/control_simple/ex1_simple_test_1.csv", f"data/data_set/ex_1/simple/control_simple/ex1_simple_test_2.csv", f"data/data_set/ex_1/simple/control_simple/ex1_simple_test_3.csv", f"data/data_set/ex_1/simple/control_simple/ex1_simple_test_4.csv"]
+control_train = [f"data/data_set/ex_1/simple/control_pre_lemma/ex1_simple_train_0.csv", f"data/data_set/ex_1/simple/control_pre_lemma/ex1_simple_train_1.csv", f"data/data_set/ex_1/simple/control_pre_lemma/ex1_simple_train_2.csv", f"data/data_set/ex_1/simple/control_pre_lemma/ex1_simple_train_3.csv", f"data/data_set/ex_1/simple/control_pre_lemma/ex1_simple_train_4.csv"]
+control_test = [f"data/data_set/ex_1/simple/control_pre_lemma/ex1_simple_test_0.csv", f"data/data_set/ex_1/simple/control_pre_lemma/ex1_simple_test_1.csv", f"data/data_set/ex_1/simple/control_pre_lemma/ex1_simple_test_2.csv", f"data/data_set/ex_1/simple/control_pre_lemma/ex1_simple_test_3.csv", f"data/data_set/ex_1/simple/control_pre_lemma/ex1_simple_test_4.csv"]
 
 
 

@@ -973,19 +973,117 @@ _OUTPUT_PATH = "data/output/"
 
 
 
-# 1. BASELINE on SIMPLE - fasttext
+# # 1. BASELINE on SIMPLE - fasttext
 
-EMBEDDINGS_FOLDER = "data/embeddings/multilingual/simple/"
-DATASET_FOLDER = "data/data_set/ex_1/simple/full/"
-X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*train*"))
-y_train_files = sorted(glob.glob(DATASET_FOLDER+"*train*"))
+# EMBEDDINGS_FOLDER = "data/embeddings/fasttext/pre_lemma/"
+# DATASET_FOLDER = "data/data_set/ex_1/simple/full/"
+# X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*train*"))
+# y_train_files = sorted(glob.glob(DATASET_FOLDER+"*train*"))
 
-X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*test*"))
-y_test_files = sorted(glob.glob(DATASET_FOLDER+"*test*"))
+# X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*test*"))
+# y_test_files = sorted(glob.glob(DATASET_FOLDER+"*test*"))
 
-model_name = "multilingual"
-split_name = "multilingual"
+# model_name = "fasttext_pre_lemma"
+# split_name = "fasttext/pre_lemma"
 
-LR.main(_SEED,
-        X_train_files, y_train_files, X_test_files, y_test_files,
-        _OUTPUT_PATH, "", model_name, split_name, _EX_NUMBER, "", "")
+# LR.main(_SEED,
+#         X_train_files, y_train_files, X_test_files, y_test_files,
+#         _OUTPUT_PATH, "", model_name, split_name, _EX_NUMBER, "", "")
+
+
+
+# # # 1.control_pre_lemma
+
+# EMBEDDINGS_FOLDER= "data/embeddings/bert/simple/full/"
+# DATASET_FOLDER = "data/data_set/ex_1/simple/control_pre_lemma/"
+
+# y_train_files = sorted(glob.glob(DATASET_FOLDER+"*train*"))
+
+
+# model_name = "BERT"
+# split_name = "simple/control_pre_lemma"
+# y_test_files = sorted(glob.glob(DATASET_FOLDER+"*test*"))
+
+# key_values = ["UNK", "CLS", "PREP"]
+
+# for k in key_values:
+        
+#         X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER+ "*" +k+ "*train*.pkl"))
+#         X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER+ "*" + k + "*test*.pkl"))
+
+
+#         LR.main(_SEED,
+#                 X_train_files, y_train_files, X_test_files, y_test_files,
+#                 _OUTPUT_PATH, k, model_name, split_name, _EX_NUMBER, "", "")
+
+
+
+# # 25/11 PROBE OTHER SAMPLED
+
+# _OUTPUT_PATH = "data/output/"
+
+# decremental_value = ["240", "120", "60"]
+# key_values = ["UNK", "CLS", "PREP"]
+
+# EMBEDDINGS_FOLDER_TRAINING = "data/embeddings/bert/control/simple/sampled/"
+# DATASET_FOLDER_TRAINING = "data/data_set/ex_1/simple/control_pre_lemma/sampled/"
+# EMBEDDINGS_FOLDER_TEST = "data/embeddings/bert/simple//control_simple/"
+# DATASET_FOLDER_TEST = "data/data_set/ex_1/simple/control_pre_lemma/"
+
+# y_test_files = sorted(glob.glob(DATASET_FOLDER_TEST+"*simple_test*"))
+
+# model_name = "BERT"
+# split_name = "simple/control_pre_lemma"
+
+
+# for d in decremental_value:
+
+#         y_train_files = sorted(glob.glob(DATASET_FOLDER_TRAINING+"*simple_train*" +d+ "*" ))
+        
+#         for k in key_values:
+                
+#                 X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER_TRAINING+ "**train*" +d+ "*" +k+ ".pkl"))
+#                 X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER_TEST+ "*" + k + "*test*.pkl"))
+        
+#                 print(X_train_files)
+#                 print(y_train_files)
+
+#                 LR.main(_SEED,
+#                         X_train_files, y_train_files, X_test_files, y_test_files,
+#                         _OUTPUT_PATH, k , model_name, split_name, _EX_NUMBER, d, "")
+
+
+
+
+
+
+
+# SEMANTIC
+
+_OUTPUT_PATH = "data/output/"
+
+key_values = ["UNK", "CLS", "PREP"]
+
+
+EMBEDDINGS_FOLDER = "data/embeddings/bert/semantic/"
+DATASET_FOLDER = "data/data_set/ex_2/simple/full/"
+
+y_train_files = sorted(glob.glob(DATASET_FOLDER+"*simple_train*"))
+
+y_test_files = sorted(glob.glob(DATASET_FOLDER+"*simple_test*"))
+
+model_name = "BERT"
+split_name = "semantic"
+
+for k in key_values:
+        X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*train*.pkl"))
+        X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*test*.pkl"))
+        print(X_train_files)
+        print(X_test_files)
+        print(y_test_files)
+        print(y_train_files)
+
+
+        LR.main(_SEED,
+                X_train_files, y_train_files, X_test_files, y_test_files,
+                _OUTPUT_PATH, k , model_name, split_name, _EX_NUMBER, "", "", "lbfgs", "meaning")
