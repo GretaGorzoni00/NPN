@@ -1,0 +1,9 @@
+split;construction;preposition;meaning;min_required
+train;yes;*;greater_plurality/accumulation;120
+train;yes;*;juxtaposition/contact;120
+train;yes;a;succession/iteration/distributivity;60
+train;yes;su;succession/iteration/distributivity;60
+train;yes;*;greater_plurality/accumulation;30
+train;yes;*;juxtaposition/contact;30
+train;yes;a;succession/iteration/distributivity;15
+train;yes;su;succession/iteration/distributivity;15

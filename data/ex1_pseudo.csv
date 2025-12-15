@@ -1,0 +1,11 @@
+split;construction;preposition;Type;other_cxn;min_required
+train;yes;a;_;_;70
+train;yes;su;_;_;70
+train;no;a;*;no;25
+train;no;su;*;no;115
+test;yes;a;_;_;30
+test;yes;su;_;_;30
+test;no;a;PNPN;yes;10
+test;no;a;!PNPN;*;20
+test;no;su;*;yes;9
+test;no;su;*;no;21
