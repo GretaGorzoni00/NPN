@@ -3,7 +3,8 @@ train;yes;*;greater_plurality/accumulation;120
 train;yes;*;juxtaposition/contact;120
 train;yes;a;succession/iteration/distributivity;60
 train;yes;su;succession/iteration/distributivity;60
-train;yes;*;greater_plurality/accumulation;30
-train;yes;*;juxtaposition/contact;30
-train;yes;a;succession/iteration/distributivity;15
-train;yes;su;succession/iteration/distributivity;15
+test;yes;*;greater_plurality/accumulation;30
+test;yes;*;juxtaposition/contact;30
+test;yes;a;succession/iteration/distributivity;15
+test;yes;su;succession/iteration/distributivity;15
+distractors;no;*;*;100

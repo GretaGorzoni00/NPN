@@ -73,3 +73,5 @@ TODO: aggiungere header all'output
    `python src/LR.py`
    `python src/experiment_1.py`
 
+
+crare cosnstrain min 
