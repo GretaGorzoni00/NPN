@@ -87,7 +87,7 @@ if __name__ == "__main__":
 	_NFOLDS = 5
 	_SEED = 232
 
-	costruzioni_A_file = "data/source/A_construction_max30.csv"
+	costruzioni_A_file = "data/source/A_construction_max30copy.csv"
 	costruzioni_SU_file = "data/source/SU_construction_max30.csv"
 
 	distrattori_A_file = "data/source/A_distractor_max30.csv"

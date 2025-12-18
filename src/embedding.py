@@ -68,6 +68,9 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 		for label, current_file in file_pairs:
 
 			df = pd.read_csv(current_file, sep=";")
+			text_cols = ["context_pre", "context_post"]
+
+			df[text_cols] = df[text_cols].fillna("")
 			results = []
 			predicted_tokens = []
 
@@ -79,7 +82,7 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 
 				if perturbed == "no":
 	
-	
+					#print(line)
 					lemma1, prep, lemma2 = line["costr"].strip().split(" ")
 					vec_constr = lemma1 + " [UNK] " + lemma2
 					sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]

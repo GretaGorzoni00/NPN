@@ -10,7 +10,7 @@ tokenizer_path = "data/tokenizer"
 
 
 
-# # 1. SIMPLE FULL 26/11
+# # 1. SIMPLE FULL 15/12
 
 # output_path = "data/embeddings/bert/simple/full"
 # split = "simple"
@@ -24,7 +24,7 @@ tokenizer_path = "data/tokenizer"
 #         prefix, tokenizer_path, train_files,test_files,
 #         output_path, split , perturbed)
 
-# # 2. OTHER FULL 26/11
+# # 2. OTHER FULL
 
 # output_path = "data/embeddings/bert/other/full"
 # split = "other"
@@ -39,7 +39,7 @@ tokenizer_path = "data/tokenizer"
 #         output_path, split , perturbed)
 
 
-# # 2. PSEUDO FULL 26/11
+# 2. PSEUDO FULL
 
 # output_path = "data/embeddings/bert/pseudo/full"
 # split = "pseudo"
@@ -52,6 +52,13 @@ tokenizer_path = "data/tokenizer"
 # embedding.main(model,
 #         prefix, tokenizer_path, train_files,test_files,
 #         output_path, split , perturbed)
+
+
+
+
+
+
+
 
 
 # # 1. SIMPLE PERTURBED FULL 26/11
@@ -97,8 +104,8 @@ split = "semantic"
 perturbed ="no"
 PATH_INPUT_TEST = "data/data_set/ex_2/simple/full/"
 PATH_INPUT_TRAINING = "data/data_set/ex_2/simple/full/"
-test_files = sorted(glob.glob(PATH_INPUT_TEST+"*simple_test*"))
-train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*simple_train*"))
+test_files = sorted(glob.glob(PATH_INPUT_TEST+"*2*simple_test*"))
+train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*2*simple_train*"))
 
 embedding.main(model,
         prefix, tokenizer_path, train_files,test_files,

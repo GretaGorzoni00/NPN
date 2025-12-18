@@ -35,9 +35,16 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 			print(y_train_path)
    
 			df_test = pd.read_csv(y_test_path, sep=";")
+   
+			if label == "construction":
+			
 
-			y_train = np.array([1 if label == "yes" else 0 for label in df_train[label]])
-			y_test = np.array([1 if label == "yes" else 0 for label in df_test[label]])
+				y_train = np.array([1 if label == "yes" else 0 for label in df_train[label]])
+				y_test = np.array([1 if label == "yes" else 0 for label in df_test[label]])
+	
+			else:
+				y_train = df_train[label].values
+				y_test  = df_test[label].values
    
 			if X_test_path.endswith(".pkl"):
 
@@ -168,7 +175,14 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 				X_train = emb_train.drop(columns=[0]).values
 				X_test = emb_test.drop(columns=[0]).values
 
-			clf = LogisticRegression(random_state=seed, max_iter=10000, solver=solver)
+			clf = LogisticRegression(
+				random_state=seed,
+				max_iter=10000,
+				solver=solver,
+				multi_class="multinomial"   # opzionale ma consigliato
+			)
+
+			target = df_train[label].values
 			if label == "construction":
 				target = np.array([1 if label == "yes" else 0 for label in df_train[label]])
 			else:
@@ -180,7 +194,10 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 			clf.fit(X_train, target)
 			preds = clf.predict(X_test)
 			# salva come yes/no
-			layer_pred_dict[f"layer_{n}"] = ["yes" if p == 1 else "no" for p in preds]
+			if label == "construction":
+				layer_pred_dict[f"layer_{n}"] = ["yes" if p == 1 else "no" for p in preds]
+			else:
+				layer_pred_dict[f"layer_{n}"] = preds.tolist()
 
 		# Crea DataFrame con gold e predizioni per layer
 		df_preds = pd.DataFrame(layer_pred_dict)
