@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, accuracy_score
 from sklearn.model_selection import train_test_split
 import sys
 import random
@@ -11,11 +11,20 @@ import os
 import matplotlib.pyplot as plt
 from collections import Counter
 
+MEANINGS = [
+    "juxtaposition/contact",
+    "succession/iteration/distributivity",
+    "greater_plurality/accumulation",
+]
+
 
 def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_path, key, model, split, experiment, decremental, perturbed, solver = "liblinear", label = "construction"):
 
 	#random.seed(seed)
 	all_layers = []
+	all_layers_by_label = []
+ 
+ 
  
  
 	is_contextual = "bert" in model.lower()
@@ -24,6 +33,14 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
  
 	for n in layer_range:
 		acc_list, prec_list, rec_list, f1_list = [], [], [], []
+  
+		if label == "meaning":
+  
+			per_label_lists = {m: {"precision": [], "recall": [], "f1-score": [], "support": []} for m in MEANINGS} 
+		else:
+			per_label_lists = None
+
+
   
   		# ciclo su tutte le 5 coppie di file
 		for i, (X_train_path, y_train_path, X_test_path, y_test_path) in enumerate(
@@ -97,10 +114,21 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 		#all_seed_preds.append(preds)
 		#preds_prob = clf.predict_proba(X_test)
 		#print(preds_prob[:10])
+  
+			if label == "meaning":
+				labels = ["juxtaposition/contact", "succession/iteration/distributivity", "greater_plurality/accumulation"]
+    
+			
 
-			report = classification_report(y_test, preds, digits=4, output_dict=True)
+				report = classification_report(y_test, preds, digits=4, output_dict=True, labels=labels, target_names=labels)
+    
+			else:
+       
+				report = classification_report(y_test, preds, digits=4, output_dict=True)
+		
+			# acc = report["accuracy"]
    
-			acc = report["accuracy"]
+			acc = accuracy_score(y_test, preds)
 			prec = report["weighted avg"]["precision"]
 			rec = report["weighted avg"]["recall"]
 			f1 = report["weighted avg"]["f1-score"]
@@ -109,9 +137,17 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 			prec_list.append(prec)
 			rec_list.append(rec)
 			f1_list.append(f1)
-		
+				
 
 			print(acc_list)
+
+			if label == "meaning":
+				for m in MEANINGS:
+					
+					per_label_lists[m]["precision"].append(report[m]["precision"])
+					per_label_lists[m]["recall"].append(report[m]["recall"])
+					per_label_lists[m]["f1-score"].append(report[m]["f1-score"])
+					per_label_lists[m]["support"].append(report[m]["support"])
 
 
 		layer_results = {
@@ -127,6 +163,26 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 		}
    
 		print(f"  Layer {n}: ACC={layer_results['mean_accuracy']:.4f} ± {layer_results['std_accuracy']:.4f}, F1={layer_results['mean_f1']:.4f} ± {layer_results['std_f1']:.4f}")
+  
+		if label == "meaning":
+			for m in MEANINGS:
+				row = {
+					"layer": n,
+					"label": m,
+					"mean_precision": float(np.mean(per_label_lists[m]["precision"])),
+					"std_precision": float(np.std(per_label_lists[m]["precision"])),
+					"mean_recall": float(np.mean(per_label_lists[m]["recall"])),
+					"std_recall": float(np.std(per_label_lists[m]["recall"])),
+					"mean_f1": float(np.mean(per_label_lists[m]["f1-score"])),
+					"std_f1": float(np.std(per_label_lists[m]["f1-score"])),
+					# support is deterministic given the dataset, but we keep it for completeness
+					"mean_support": float(np.mean(per_label_lists[m]["support"])),
+					"std_support": float(np.std(per_label_lists[m]["support"])),
+				}
+				all_layers_by_label.append(row)
+
+  
+  
 		all_layers.append(layer_results)
 		
 	# salva risultati in CSV
@@ -143,6 +199,14 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 	df.to_csv(csv_path, index=False)
 	print(f"\nRisultati medi salvati in: {csv_path}")
  
+	if label == "meaning":
+		df_lbl = pd.DataFrame(all_layers_by_label)
+		csv_name_lbl = f"{model}_{experiment}_{key}_{decremental}_{perturbed}_avg_metrics_by_label.csv"
+		csv_path_lbl = os.path.join(output_path_metrics, csv_name_lbl)
+		df_lbl.to_csv(csv_path_lbl, index=False)
+		print(f"Per-label results saved in: {csv_path_lbl}")
+
+ 
 
  
  
@@ -156,7 +220,10 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 
 		df_train = pd.read_csv(y_train_path, sep=";")
 		df_test = pd.read_csv(y_test_path, sep=";")
-		y_test = np.array([1 if label == "yes" else 0 for label in df_test[label]])
+		if label == "construction":
+			y_test = np.array([1 if x == "yes" else 0 for x in df_test[label]])
+		else:
+			y_test = df_test[label].values
 
 		layer_pred_dict = {}
 
@@ -274,7 +341,7 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 	plt.ylabel("Score")
 	plt.title(f"Performance metrics per layer – {model}_{key}_{experiment}_{split}")
 	plt.grid(True)
-	plt.ylim(0.4, 1.0)
+	plt.ylim(0, 1.0)
 	plt.legend()
 	plt.tight_layout()
 

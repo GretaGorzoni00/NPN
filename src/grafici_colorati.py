@@ -6,9 +6,27 @@ def plot_multiple_metric_files(csv_files, labels, output_path, title=None):
 
     plt.figure(figsize=(10, 6))
 
-    for csv_file, label in zip(csv_files, labels):
+    strong_colors = [
+        "#20b2aa",  # UNK → verde acqua (lightseagreen)
+        "#1f77b4",  # PREP → blu
+        "#4fc3f7"   # CLS → azzurro
+    ]
+    baseline_colors = [
+        "#8f7bbf",  # viola-grigio più deciso
+        "#b8a8d9",  # viola-grigio medio
+        "#d8cfea",  # lilla chiaro
+        "#f0edf5"   # quasi bianco con sottotono viola
+    ]
+
+    for i, (csv_file, label) in enumerate(zip(csv_files, labels)):
         df = pd.read_csv(csv_file)
 
+        if i < 3:
+            color = strong_colors[i]
+            z = 3
+        else:
+            color = baseline_colors[i - 3]
+            z = 1
 
         plt.errorbar(
             df["layer"],
@@ -16,27 +34,29 @@ def plot_multiple_metric_files(csv_files, labels, output_path, title=None):
             yerr=df["std_accuracy"],
             fmt='-o',
             capsize=4,
-            label=f"{label}",
-            alpha=0.9
+            label=label,
+            color=color,
+            linewidth=1.8,   # stesso spessore per tutti
+            alpha=0.95,
+            zorder=z
         )
 
     plt.xlabel("Layer")
     plt.ylabel("Accuracy")
     plt.ylim(0, 1.0)
-    plt.grid(True)
+    plt.grid(True, alpha=0.3)
 
     if title:
         plt.title(title)
 
-    plt.legend()
+    plt.legend(fontsize=8)
     plt.tight_layout()
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     plt.savefig(output_path, dpi=300)
-    print(f"Grafico salvato in: {output_path}")
-
     plt.close()
-    
+
+
 
 
 csvs = [

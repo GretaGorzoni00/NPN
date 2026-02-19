@@ -9,43 +9,46 @@ import matplotlib.pyplot as plt
 # =========================
 DATASET_SEP = ";"
 
+left = "ITWAC pre lemma"  # <-- just for title, not used in code (we use PRED_ prefix instea
+right = "FASTTEXT pre lemma"  # <-- just for title, not used in code (we use PRED_ prefix instead)
+
 # ---- UPDATE THESE PATHS FOR YOUR NEW EXPERIMENT ----
 DATASET_PATHS = [
-    "data/data_set/ex_2/semantic/full/ex2_semantic_test_0.csv",
-    "data/data_set/ex_2/semantic/full/ex2_semantic_test_1.csv",
-    "data/data_set/ex_2/semantic/full/ex2_semantic_test_2.csv",
-    "data/data_set/ex_2/semantic/full/ex2_semantic_test_3.csv",
-    "data/data_set/ex_2/semantic/full/ex2_semantic_test_4.csv",
+    "data/data_set/ex_2/simple/full/ex2_simple_test_0.csv",
+    "data/data_set/ex_2/simple/full/ex2_simple_test_1.csv",
+    "data/data_set/ex_2/simple/full/ex2_simple_test_2.csv",
+    "data/data_set/ex_2/simple/full/ex2_simple_test_3.csv",
+    "data/data_set/ex_2/simple/full/ex2_simple_test_4.csv",
 ]
 
 # Predictions for UNK condition (same order, same row count as datasets)
-PRED_PATHS_UNK = [
-    "data/output/predictions/bert/semantic/full/BERT_ex2_UNK_split0___predictions.csv",
-    "data/output/predictions/bert/semantic/full/BERT_ex2_UNK_split1___predictions.csv",
-    "data/output/predictions/bert/semantic/full/BERT_ex2_UNK_split2___predictions.csv",
-    "data/output/predictions/bert/semantic/full/BERT_ex2_UNK_split3___predictions.csv",
-    "data/output/predictions/bert/semantic/full/BERT_ex2_UNK_split4___predictions.csv",
+PRED_PATHS_LEFT = [
+    "data/output/predictions/itwac/pre_lemma_semantic/full/itwac_ex2__split0___predictions.csv",
+    "data/output/predictions/itwac/pre_lemma_semantic/full/itwac_ex2__split1___predictions.csv",
+    "data/output/predictions/itwac/pre_lemma_semantic/full/itwac_ex2__split2___predictions.csv",
+    "data/output/predictions/itwac/pre_lemma_semantic/full/itwac_ex2__split3___predictions.csv",
+    "data/output/predictions/itwac/pre_lemma_semantic/full/itwac_ex2__split4___predictions.csv",
 ]
 
 # Predictions for PREP condition (same order, same row count as datasets)
-PRED_PATHS_PREP = [
-    "data/output/predictions/bert/semantic/full/BERT_ex2_PREP_split0___predictions.csv",
-    "data/output/predictions/bert/semantic/full/BERT_ex2_PREP_split1___predictions.csv",
-    "data/output/predictions/bert/semantic/full/BERT_ex2_PREP_split2___predictions.csv",
-    "data/output/predictions/bert/semantic/full/BERT_ex2_PREP_split3___predictions.csv",
-    "data/output/predictions/bert/semantic/full/BERT_ex2_PREP_split4___predictions.csv",
+PRED_PATHS_RIGHT = [
+    "data/output/predictions/fasttext/pre_lemma_semantic/full/fasttext_ex2__split0___predictions.csv",
+    "data/output/predictions/fasttext/pre_lemma_semantic/full/fasttext_ex2__split1___predictions.csv",
+    "data/output/predictions/fasttext/pre_lemma_semantic/full/fasttext_ex2__split2___predictions.csv",
+    "data/output/predictions/fasttext/pre_lemma_semantic/full/fasttext_ex2__split3___predictions.csv",
+    "data/output/predictions/fasttext/pre_lemma_semantic/full/fasttext_ex2__split4___predictions.csv",
 ]
 
 # ---- Gold columns in dataset ----
 GOLD_PREP_COL = "preposition"   # e.g., "preposition"
-GOLD_SEM_COL  = "MEANING"       # e.g., "MEANING" / "meaning" / "semantic_value"
+GOLD_SEM_COL  = "meaning"       # e.g., "MEANING" / "meaning" / "semantic_value"
 
 # ---- Prediction column name inside *_predictions.csv ----
 # Put the EXACT column name that stores predicted semantic label
 PRED_COL = "layer_12"           # <-- change if your file uses a different name
 
 OUT_DIR = "data/output/confusion_matrices"
-OUT_PNG = os.path.join(OUT_DIR, "cm_semantic_rowpct_agg_5splits_UNK_vs_PREP.png")
+OUT_PNG = os.path.join(OUT_DIR, f"cm_semantic_rowpct_agg_5splits_{left}_vs_{right}.png")
 
 # =========================
 # HELPERS — NORMALIZATION
@@ -194,10 +197,12 @@ def plot_two_matrices_side_by_side(
     mat_pct_right = mat_pct_right.reindex(index=rows, columns=cols).fillna(0.0)
     mat_counts_right = mat_counts_right.reindex(index=rows, columns=cols).fillna(0).astype(int)
 
-    fig_h = max(5, 0.45 * len(rows) + 2.8)
-    fig_w = 14
+    # ---- tighter figure size (a bit wider, less empty margins)
+    fig_h = max(5, 0.45 * len(rows) + 2.2)
+    fig_w = 13.6
     fig, axes = plt.subplots(1, 2, figsize=(fig_w, fig_h))
-    fig.subplots_adjust(left=0.38, right=0.82, top=0.88, wspace=0.70)
+    # less left whitespace + keep room for colorbar
+    fig.subplots_adjust(left=0.25, right=0.84, top=0.88, bottom=0.25, wspace=0.55)
 
     cmap = "BuPu"
     vmin, vmax = 0, 100
@@ -205,12 +210,18 @@ def plot_two_matrices_side_by_side(
     imL = axes[0].imshow(mat_pct_left.values.astype(float), aspect="auto", vmin=vmin, vmax=vmax, cmap=cmap)
     imR = axes[1].imshow(mat_pct_right.values.astype(float), aspect="auto", vmin=vmin, vmax=vmax, cmap=cmap)
 
+    # ---- ticks
     yticks = np.arange(len(rows))
+    xticks = np.arange(len(cols))
+    xticklabels = [c.replace("PRED_", "") for c in cols]
+
     for ax in axes:
         ax.set_yticks(yticks)
         ax.set_ylim(len(rows) - 0.5, -0.5)
-        ax.set_xticks(np.arange(len(cols)))
-        ax.set_xticklabels([c.replace("PRED_", "") for c in cols], fontsize=12)
+
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xticklabels, fontsize=11, rotation=25, ha="right")  # FIX overlap
+        ax.tick_params(axis="x", pad=6)
 
         ax.set_yticks(np.arange(-.5, len(rows), 1), minor=True)
         ax.grid(which="minor", axis="y", linestyle="-", linewidth=0.5, alpha=0.25)
@@ -222,26 +233,19 @@ def plot_two_matrices_side_by_side(
     axes[1].set_title(title_right, fontsize=14, pad=10)
     axes[0].set_ylabel("Gold group (meaning + prep)", fontsize=12)
 
-    # Left y labels = full label + N
+    # ---- Y tick labels only on left panel (full label + N)
     ylabels_left = []
     for r in rows:
         n = int(mat_counts_left.loc[r].sum()) if r in mat_counts_left.index else 0
-        ylabels_left.append(f"{r}  (N={n})")
+        ylabels_left.append(f"{r} (N={n})")
     axes[0].set_yticklabels(ylabels_left, fontsize=11)
     axes[0].tick_params(axis="y", labelleft=True, labelright=False, pad=2)
 
-    # On PREP panel, draw (N=...) to the left (like your original trick)
-    for i, r in enumerate(rows):
-        n = int(mat_counts_right.loc[r].sum()) if r in mat_counts_right.index else 0
-        y_ax = 1 - (i + 0.5) / len(rows)
-        axes[1].text(
-            -0.22, y_ax,
-            f"(N={n})",
-            ha="right", va="center",
-            fontsize=11,
-            transform=axes[1].transAxes
-        )
+    # Hide y tick labels on right panel (we add only N manually)
+    axes[1].set_yticklabels([""] * len(rows))
+    axes[1].tick_params(axis="y", left=False)
 
+    # ---- annotate cells (percent)
     def annotate(ax, mat):
         data = mat.astype(float)
         for i in range(data.shape[0]):
@@ -252,14 +256,30 @@ def plot_two_matrices_side_by_side(
                     ha="center", va="center",
                     fontsize=11,
                     color="black",
-                    bbox=dict(boxstyle="round,pad=0.18", facecolor="white", edgecolor="none", alpha=0.75)
+                    bbox=dict(
+                        boxstyle="round,pad=0.18",
+                        facecolor="white",
+                        edgecolor="none",
+                        alpha=0.75
+                    )
                 )
 
     annotate(axes[0], mat_pct_left.values)
     annotate(axes[1], mat_pct_right.values)
 
-    # Colorbar OUTSIDE
-    cax = fig.add_axes([0.86, 0.22, 0.02, 0.56])
+    # ---- PREP panel: add (N=...) to the left of the right panel (like your original)
+    for i, r in enumerate(rows):
+        n = int(mat_counts_right.loc[r].sum()) if r in mat_counts_right.index else 0
+        y_ax = 1 - (i + 0.5) / len(rows)
+        axes[1].text(
+            -0.12, y_ax, f"(N={n})",  # closer (less empty space)
+            ha="right", va="center",
+            fontsize=11,
+            transform=axes[1].transAxes
+        )
+
+    # ---- colorbar outside, but closer
+    cax = fig.add_axes([0.87, 0.24, 0.02, 0.54])
     cbar = fig.colorbar(imR, cax=cax)
     cbar.set_label("Row % (within gold group)", fontsize=11)
 
@@ -275,35 +295,35 @@ def plot_two_matrices_side_by_side(
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
 
-    if not (len(DATASET_PATHS) == len(PRED_PATHS_UNK) == len(PRED_PATHS_PREP)):
-        raise ValueError("DATASET_PATHS, PRED_PATHS_UNK, PRED_PATHS_PREP must have the same length.")
+    if not (len(DATASET_PATHS) == len(PRED_PATHS_LEFT) == len(PRED_PATHS_RIGHT)):
+        raise ValueError("DATASET_PATHS, PRED_PATHS_LEFT, PRED_PATHS_RIGHT must have the same length.")
 
-    # --- UNK ---
-    agg_counts_unk = aggregate_counts_over_splits(DATASET_PATHS, PRED_PATHS_UNK, DATASET_SEP, PRED_COL)
-    agg_counts_unk = agg_counts_unk.reindex(sort_rows_sem(list(agg_counts_unk.index))).fillna(0).astype(int)
-    agg_counts_unk = agg_counts_unk.loc[agg_counts_unk.sum(axis=1) > 0]
-    agg_pct_unk = row_normalize_to_percent(agg_counts_unk)
+    # --- LEFT ---
+    agg_counts_left = aggregate_counts_over_splits(DATASET_PATHS, PRED_PATHS_LEFT, DATASET_SEP, PRED_COL)
+    agg_counts_left = agg_counts_left.reindex(sort_rows_sem(list(agg_counts_left.index))).fillna(0).astype(int)
+    agg_counts_left = agg_counts_left.loc[agg_counts_left.sum(axis=1) > 0]
+    agg_pct_left = row_normalize_to_percent(agg_counts_left)
 
-    # --- PREP ---
-    agg_counts_prep = aggregate_counts_over_splits(DATASET_PATHS, PRED_PATHS_PREP, DATASET_SEP, PRED_COL)
-    agg_counts_prep = agg_counts_prep.reindex(sort_rows_sem(list(agg_counts_prep.index))).fillna(0).astype(int)
-    agg_counts_prep = agg_counts_prep.loc[agg_counts_prep.sum(axis=1) > 0]
-    agg_pct_prep = row_normalize_to_percent(agg_counts_prep)
+    # --- RIGHT ---
+    agg_counts_right = aggregate_counts_over_splits(DATASET_PATHS, PRED_PATHS_RIGHT, DATASET_SEP, PRED_COL)
+    agg_counts_right = agg_counts_right.reindex(sort_rows_sem(list(agg_counts_right.index))).fillna(0).astype(int)
+    agg_counts_right = agg_counts_right.loc[agg_counts_right.sum(axis=1) > 0]
+    agg_pct_right = row_normalize_to_percent(agg_counts_right)
 
     # Align rows (union) and keep desired order
-    all_rows = sort_rows_sem(sorted(set(agg_pct_unk.index) | set(agg_pct_prep.index)))
-    agg_counts_unk  = agg_counts_unk.reindex(all_rows).fillna(0).astype(int)
-    agg_pct_unk     = agg_pct_unk.reindex(all_rows).fillna(0.0)
-    agg_counts_prep = agg_counts_prep.reindex(all_rows).fillna(0).astype(int)
-    agg_pct_prep    = agg_pct_prep.reindex(all_rows).fillna(0.0)
+    all_rows = sort_rows_sem(sorted(set(agg_pct_left.index) | set(agg_pct_right.index)))
+    agg_counts_left  = agg_counts_left.reindex(all_rows).fillna(0).astype(int)
+    agg_pct_left     = agg_pct_left.reindex(all_rows).fillna(0.0)
+    agg_counts_right = agg_counts_right.reindex(all_rows).fillna(0).astype(int)
+    agg_pct_right    = agg_pct_right.reindex(all_rows).fillna(0.0)
 
     plot_two_matrices_side_by_side(
-        mat_pct_left=agg_pct_unk,
-        mat_counts_left=agg_counts_unk,
-        title_left="UNK — aggregated 5 splits",
-        mat_pct_right=agg_pct_prep,
-        mat_counts_right=agg_counts_prep,
-        title_right="PREP — aggregated 5 splits",
+        mat_pct_left=agg_pct_left,
+        mat_counts_left=agg_counts_left,
+        title_left=f"{left} — aggregated 5 splits",
+        mat_pct_right=agg_pct_right,
+        mat_counts_right=agg_counts_right,
+        title_right=f"{right} — aggregated 5 splits",
         out_png=OUT_PNG
     )
 

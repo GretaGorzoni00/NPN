@@ -27,8 +27,8 @@ def lighten_color(color, amount=0.6):
 # --------------------------------------
 df = pd.read_csv("lemmi_NPN.csv", sep=";")
 
-MIN_FREQ = 4       # frequenza minima per visualizzare nodo
-LABEL_FREQ = 20    # frequenza minima per mostrare etichetta
+MIN_FREQ = 5       # frequenza minima per visualizzare nodo
+LABEL_FREQ = 15    # frequenza minima per mostrare etichetta
 
 df = df[df["token_frequency"] >= MIN_FREQ]
 
@@ -41,6 +41,9 @@ meaning_colors = {
     m: lighten_color(c, amount=0.6)
     for m, c in zip(unique_meanings, base_colors)
 }
+
+meaning_colors["juxtaposition/contact"] = lighten_color("seagreen", amount=0.5)
+
 
 # --------------------------------------
 # 2. COSTRUZIONE DEL GRAFO

@@ -1,8 +1,8 @@
 import pandas as pd
 import glob
 
-input_files = sorted(glob.glob("data/data_set/ex_2/simple/full/ex1_simple_test_1.csv"))
-pred_files  = sorted(glob.glob("data/output/predictions/semantic/full/BERT_ex1_UNK_split1___predictions.csv"))
+input_files = sorted(glob.glob("data/data_set/ex_2/simple/full/ex2_simple_test_4.csv"))
+pred_files  = sorted(glob.glob("data/output/predictions/semantic/full/BERT_ex2_UNK_split4___predictions.csv"))
 
 print(input_files)
 
@@ -85,7 +85,7 @@ print(error_percent)
 import pandas as pd
 
 # Leggi il CSV
-df = pd.read_csv("data/data_set/ex_2/simple/full/ex1_simple_train_4.csv", sep=";")
+df = pd.read_csv("data/data_set/ex_2/simple/full/ex2_simple_test_2.csv", sep=";")
 
 # Crea una colonna "category" con le sottocategorie per succession
 def categorize(row):

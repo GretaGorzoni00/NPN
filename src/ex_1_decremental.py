@@ -42,11 +42,11 @@ train_sizes = [240, 120, 60]
 
 
 
-# # 4. PROBE on PSEUDO
+# 4. PROBE on PSEUDO
 
 # dataset_folder =  "data/data_set/"
 # embeddings_folder = "data/output/embeddings/pseudo/"
-# output_folder = "data/data_set/sampled/"
+# output_folder = "data/data_set/ex_1/pseudo/sampled/"
 # output_emb_folder = "data/output/embeddings/pseudo/sampled/"
 # csv_pattern="*pseudo_train*.csv"
 # emb_pattern="*train*.pkl"
@@ -79,7 +79,7 @@ train_sizes = [240, 120, 60]
 # csv_pattern="*pseudo_train*.csv"
 # emb_pattern="*train*"
 
-# #26/11 PROBE SIMPLE 
+#26/11 PROBE SIMPLE 
 
 # dataset_folder =  "data/data_set/ex_1/simple/control_simple/"
 # embeddings_folder = "data/embeddings/bert/simple/control_simple/"
@@ -105,19 +105,37 @@ train_sizes = [240, 120, 60]
 
 
 
-csv_pattern="*train*.csv"
-emb_pattern="*train*.tsv"
+# csv_pattern="*train*.csv"
+# emb_pattern="*train*.tsv"
 
-decremental_training.main(dataset_folder, embeddings_folder, output_folder, output_emb_folder, train_sizes, csv_pattern, emb_pattern, "")
+# decremental_training.main(dataset_folder, embeddings_folder, output_folder, output_emb_folder, train_sizes, csv_pattern, emb_pattern, "")
 
  
 #26/11 PROBE OTHEr
 #non riesco a runnare perché ValueError: Non ci sono abbastanza esempi per no/su: 9 < 60
 
-dataset_folder =  "data/data_set/ex_1/simple/control_pre_lemma/"
+# dataset_folder =  "data/data_set/ex_1/pseudo/full/"
+# embeddings_folder = "data/embeddings/bert/pseudo/full/"
+# output_folder = "data/data_set/ex_1/pseudo/sampled/"
+# output_emb_folder = "data/embeddings/bert/pseudo/sampled/"
+
+# key_values = ["UNK", "CLS", "PREP"]
+
+# for k in key_values:
+
+# 	csv_pattern="*train*.csv"
+# 	emb_pattern="*" + k + "*train*.pkl"
+
+# 	decremental_training.main(dataset_folder, embeddings_folder, output_folder, output_emb_folder, train_sizes, csv_pattern, emb_pattern, k)
+ 
+ 
+
+
+# CONTROL CLASSIFIER 
+dataset_folder =  "data/data_set/ex_1/simple/control_simple/"
 embeddings_folder = "data/embeddings/bert/simple/control_simple/"
-output_folder = "data/data_set/ex_1/simple/control_pre_lemma/sampled/"
-output_emb_folder = "data/embeddings/bert/control/simple/sampled/"
+output_folder = "data/data_set/ex_1/simple/control_simple/sampled/"
+output_emb_folder = "data/embeddings/bert/simple/control_simple/sampled/"
 
 key_values = ["UNK", "CLS", "PREP"]
 

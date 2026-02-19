@@ -6,8 +6,15 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 
 
-emb = pd.read_pickle("data/embeddings/bert/semantic/BERT_embedding_UNK_ex2_simple_train_2.pkl")
-df = pd.read_csv("data/data_set/ex_2/simple/full/ex2_simple_train_2.csv", sep=";")
+# emb = pd.read_pickle("data/embeddings/bert/simple/full/BERT_embedding_UNK_ex1_simple_train_2.pkl")
+# df = pd.read_csv("data/data_set/ex_1/simple/full/ex1_simple_train_2.csv", sep=";")
+
+emb = pd.read_pickle("data/embeddings/bert/semantic/BERT_embedding_UNK_ex2_simple_train_4.pkl")
+df = pd.read_csv("data/data_set/ex_2/simple/full/ex2_simple_train_4.csv", sep=";")
+
+
+# emb = pd.read_pickle("data/embeddings/bert/semantic/per_dopo/BERT_embedding_PREP_per_dopo.pkl")
+# df = pd.read_csv("data/data_set/ex_2/simple/per_dopo.csv", sep=";")
 
 lemma_list = []
 construction_list = []
@@ -15,18 +22,21 @@ semantic_list = []
 type_list = []
 sentence_list = []
 syntax_list = []
+preposition_list = []
 
 for _, line in df.iterrows():
 
 
 	lemma = line["noun"].strip()
 	construction = line["construction"].strip()
+	
 
 	meaning = line["meaning"].strip()
 	type = line["Type"].strip()
 	print(line)
 	sentence = line["context_pre"].strip() + " " + line["costr"].strip() + " " + line["context_post"].strip()
 	syntax = line["syntactic_function"].strip()
+	preposition = line["preposition"].strip()
  
 	sentence_list.append(sentence)	
 	type_list.append(type)
@@ -34,6 +44,7 @@ for _, line in df.iterrows():
 	semantic_list.append(meaning)
 	lemma_list.append(lemma)
 	syntax_list.append(syntax)
+	preposition_list.append(preposition)
 
 #X = np.array([np.array(e[f"UNK_layer_12"]) for e in emb])
 
@@ -58,6 +69,7 @@ for layer in layers:
 		"semantic": semantic_list,
 		"syntax": syntax_list,
 		"sentence": sentence_list,
+		"preposition": preposition_list,
 	})
 
 	dfs.append(df_layer)
@@ -242,36 +254,69 @@ print(pca.singular_values_)
 # )
 
 
+patterns = {
+    "porta a porta": r"\bporta\s+a\s+porta\b",
+    "balcone a balcone": r"\bbalcone\s+a\s+balcone\b",
+    "uscio a uscio": r"\buscio\s+a\s+uscio\b",
+}
+
+df_plot["target"] = "other"
+sent = df_plot["sentence"].str.lower()
+
+for label, pat in patterns.items():
+    df_plot.loc[sent.str.contains(pat, regex=True, na=False), "target"] = label
+
+print(df_plot["target"].value_counts())
+
+
 x_min, x_max = df_plot["PCA1"].min(), df_plot["PCA1"].max()
 y_min, y_max = df_plot["PCA2"].min(), df_plot["PCA2"].max()
 z_min, z_max = df_plot["PCA3"].min(), df_plot["PCA3"].max()
 
+# fig = px.scatter_3d(
+# 	df_plot,
+# 	x="PCA1",
+# 	y="PCA2",
+# 	z="PCA3",
+# 	color="semantic",
+# 	animation_frame="layer",
+# 	opacity=0.6,
+# 	hover_data={
+# 		"sentence": True,
+# 		"lemma": False,
+# 		"layer": False,
+# 		"PCA1": False,
+# 		"PCA2": False,
+# 		"PCA3": False,
+# 	},
+# 	title="PCA indipendente per layer BERT"
+# )
+
 fig = px.scatter_3d(
-	df_plot,
-	x="PCA1",
-	y="PCA2",
-	z="PCA3",
-	color="semantic",
-	animation_frame="layer",
-	opacity=0.6,
-	hover_data={
-		"sentence": True,
-		"lemma": False,
-		"layer": False,
-		"PCA1": False,
-		"PCA2": False,
-		"PCA3": False,
-	},
-	title="PCA indipendente per layer BERT"
+    df_plot,
+    x="PCA1", y="PCA2", z="PCA3",
+    color="semantic",
+    symbol="target",              # <-- qui
+    animation_frame="layer",
+    opacity=0.6,
+    hover_data={"sentence": True, "target": True},
+    title="PCA per layer BERT – evidenziando porta/balcone/uscio"
 )
+
+fig.show()
+fig.write_html("pca_layers_targets.html")
+
+
+
 
 
 fig.update_layout(
-	transition={"duration": 0},
+	transition={"duration": 10},
 	scene=dict(
 		xaxis=dict(range=[x_min, x_max], title="PCA 1"),
 		yaxis=dict(range=[y_min, y_max], title="PCA 2"),
 		zaxis=dict(range=[z_min, z_max], title="PCA 3"),
+		aspectmode="cube",
 	),
 	sliders=[{
 		"currentvalue": {"prefix": "Layer BERT: "}
@@ -279,5 +324,8 @@ fig.update_layout(
 )
 
 fig.show()
+fig.write_html("pca_bert_ex2_simple_layers_independent.html")	
+
+
 
 

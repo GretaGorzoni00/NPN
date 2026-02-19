@@ -82,7 +82,7 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 
 				if perturbed == "no":
 	
-					#print(line)
+					print(line)
 					lemma1, prep, lemma2 = line["costr"].strip().split(" ")
 					vec_constr = lemma1 + " [UNK] " + lemma2
 					sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
@@ -200,6 +200,7 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 				inputs_prediction = tokenizer(sentence_prediction, return_tensors="pt")
 				#print(sentence_orig)
 				tokens = tokenizer.tokenize(sentence_orig)
+				print(tokens)
 
 				tot_caratteri = 0
 				i = 0
@@ -208,7 +209,7 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 					curr_chars = len([x for x in tokens[i] if not x == "#"])
 					tot_caratteri += curr_chars
 					i+=1
-
+				print(tokens[i])
 				#print("Trovata preposizione", tokens[i], "in posizione", i, "con id", inputs_orig["input_ids"][0].tolist()[i+1])
 				
 				#Converte la frase in ID tokenizzati, creando tensori PyTorch

@@ -11,13 +11,16 @@ random.seed(999)
 _LEN = 0
 
 
+_FIELD = 'pre_lemma'
+
+
 to_load = set()
 for filename in input_files:
 	with open(filename) as fin:
 		csvfile = csv.DictReader(fin, delimiter=";")
 
 		for row in csvfile:
-			noun = row['noun'].strip()
+			noun = row[_FIELD].strip()
 			to_load.add(noun)
 
 
@@ -41,7 +44,7 @@ for filename in input_files:
 		csvfile = csv.DictReader(fin, delimiter=";")
 
 		for row in csvfile:
-			noun = row['noun'].strip()
+			noun = row[_FIELD].strip()
 			if noun in model_dict:
 				fout.write(f"{noun}\t{' '.join(model_dict[noun])}\n")
 			else:

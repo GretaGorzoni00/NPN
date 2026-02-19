@@ -99,13 +99,28 @@ tokenizer_path = "data/tokenizer"
 
 
 
-output_path = "data/embeddings/bert/semantic/"
+# output_path = "data/embeddings/bert/semantic/"
+# split = "semantic"
+# perturbed ="no"
+# PATH_INPUT_TEST = "data/data_set/ex_2/simple/full/"
+# PATH_INPUT_TRAINING = "data/data_set/ex_2/simple/full/"
+# test_files = sorted(glob.glob(PATH_INPUT_TEST+"*2*simple_test*"))
+# train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*2*simple_train*"))
+
+# embedding.main(model,
+#         prefix, tokenizer_path, train_files,test_files,
+#         output_path, split , perturbed)
+
+
+# per dopo
+
+output_path = "data/embeddings/bert/semantic/per_dopo"
 split = "semantic"
 perturbed ="no"
-PATH_INPUT_TEST = "data/data_set/ex_2/simple/full/"
-PATH_INPUT_TRAINING = "data/data_set/ex_2/simple/full/"
-test_files = sorted(glob.glob(PATH_INPUT_TEST+"*2*simple_test*"))
-train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*2*simple_train*"))
+PATH_INPUT_TEST = "data/data_set/ex_2/distractors/full/"
+PATH_INPUT_TRAINING = "data/data_set/ex_2/distractors/full/"
+test_files = sorted(glob.glob(PATH_INPUT_TEST+"*2*distractors_test*"))
+train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*2*distractors_train*"))
 
 embedding.main(model,
         prefix, tokenizer_path, train_files,test_files,
