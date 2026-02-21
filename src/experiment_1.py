@@ -1559,37 +1559,192 @@ _OUTPUT_PATH = "data/output/"
 # PSEUDO DECREMENTAL
 
 
-decremental_value = ["240", "120", "60"]
+# decremental_value = ["240", "120", "60"]
+# key_values = ["UNK", "CLS", "PREP"]
+
+# EMBEDDINGS_FOLDER_TRAINING = "data/embeddings/bert/other/sampled/"
+# DATASET_FOLDER_TRAINING = "data/data_set/ex_1/other/sampled/"
+# EMBEDDINGS_FOLDER_TEST = "data/embeddings/bert/other/full/"
+# DATASET_FOLDER_TEST = "data/data_set/ex_1/other/full/"
+
+# y_test_files = sorted(glob.glob(DATASET_FOLDER_TEST+"*other_test*"))
+
+# model_name = "BERT"
+# split_name = "other"
+
+
+# for d in decremental_value:
+
+#         y_train_files = sorted(glob.glob(DATASET_FOLDER_TRAINING+"*other_train*" +d+ "*" ))
+        
+#         for k in key_values:
+                
+#                 X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER_TRAINING+ "**train*" +d+ "*" +k+ ".pkl"))
+#                 X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER_TEST+ "*" + k + "*test*.pkl"))
+        
+#                 print(X_train_files)
+#                 print(y_train_files)
+
+#                 LR.main(_SEED,
+#                         X_train_files, y_train_files, X_test_files, y_test_files,
+#                         _OUTPUT_PATH, k , model_name, split_name, _EX_NUMBER, d, "", solver="liblinear", label="construction")
+                
+                
+
+        
+        
+
+
+#run scivetti baseline
+
+
+
+# EMBEDDINGS_FOLDER = "data/embeddings/glove/scivetti/"
+# DATASET_FOLDER = "data/data_set/scivetti/full/"
+# X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*train*"))
+# y_train_files = sorted(glob.glob(DATASET_FOLDER+"*train*"))
+
+# X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*test*"))
+# y_test_files = sorted(glob.glob(DATASET_FOLDER+"*test*"))
+
+# model_name = "glove"
+# split_name = "glove/scivetti"
+
+
+# LR.main(_SEED,
+#         X_train_files, y_train_files, X_test_files, y_test_files,
+#        _OUTPUT_PATH, "", model_name, split_name, _EX_NUMBER, "", "",  solver="liblinear", label="construction")
+
+
+
+## RUN SCIVETTI BERT
+
+
+
+# _OUTPUT_PATH = "data/output/"
+
+# key_values = ["UNK", "CLS", "PREP"]
+
+
+# EMBEDDINGS_FOLDER = "data/embeddings/bert/scivetti/ex1/"
+# DATASET_FOLDER = "data/data_set/scivetti/full/"
+
+# y_train_files = sorted(glob.glob(DATASET_FOLDER+"*scivetti_train*"))
+
+# y_test_files = sorted(glob.glob(DATASET_FOLDER+"*scivetti_test*"))
+
+# model_name = "BERT"
+# split_name = "scivetti"
+
+# for k in key_values:
+#         X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*train*.pkl"))
+#         X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*test*.pkl"))
+#         print(X_train_files)
+#         print(X_test_files)
+#         print(y_test_files)
+#         print(y_train_files)
+
+
+#         LR.main(_SEED,
+#                 X_train_files, y_train_files, X_test_files, y_test_files,
+#                 _OUTPUT_PATH, k , model_name, split_name, _EX_NUMBER, "", "", solver="liblinear", label="construction")
+
+
+
+######### run multilingual bert scivetti
+
+
+# _OUTPUT_PATH = "data/output/"
+
+# key_values = ["UNK", "CLS", "PREP"]
+
+
+# EMBEDDINGS_FOLDER = "data/embeddings/bert/multilingual/ita_npn/pseudo/"
+# DATASET_FOLDER = "data/data_set/ex_1/pseudo/full/"
+
+# y_train_files = sorted(glob.glob(DATASET_FOLDER+"*pseudo_train*"))
+
+# y_test_files = sorted(glob.glob(DATASET_FOLDER+"*pseudo_test*"))
+
+# model_name = "BERT_M"
+# split_name = "multilingual/ita_npn/pseudo"
+
+# for k in key_values:
+#         X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*train*.pkl"))
+#         X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*test*.pkl"))
+#         print(X_train_files)
+#         print(X_test_files)
+#         print(y_test_files)
+#         print(y_train_files)
+
+
+#         LR.main(_SEED,
+#                 X_train_files, y_train_files, X_test_files, y_test_files,
+#                 _OUTPUT_PATH, k , model_name, split_name, _EX_NUMBER, "", "", solver="liblinear", label="construction")
+
+
+
+###umberto simple
+
+
+# _OUTPUT_PATH = "data/output/"
+
+# key_values = ["UNK", "CLS", "PREP"]
+
+
+# EMBEDDINGS_FOLDER = "data/embeddings/umberto/simple/"
+# DATASET_FOLDER = "data/data_set/ex_1/simple/full/"
+
+# y_train_files = sorted(glob.glob(DATASET_FOLDER+"*simple_train*"))
+
+# y_test_files = sorted(glob.glob(DATASET_FOLDER+"*simple_test*"))
+
+# model_name = "umberto"
+# split_name = "umberto/simple"
+
+# for k in key_values:
+#         X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*train*.pkl"))
+#         X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*test*.pkl"))
+#         print(X_train_files)
+#         print(X_test_files)
+#         print(y_test_files)
+#         print(y_train_files)
+
+
+#         LR.main(_SEED,
+#                 X_train_files, y_train_files, X_test_files, y_test_files,
+#                 _OUTPUT_PATH, k , model_name, split_name, _EX_NUMBER, "", "", solver="liblinear", label="construction")
+
+
+
+## umberto other
+
+
+_OUTPUT_PATH = "data/output/"
+
 key_values = ["UNK", "CLS", "PREP"]
 
-EMBEDDINGS_FOLDER_TRAINING = "data/embeddings/bert/other/sampled/"
-DATASET_FOLDER_TRAINING = "data/data_set/ex_1/other/sampled/"
-EMBEDDINGS_FOLDER_TEST = "data/embeddings/bert/other/full/"
-DATASET_FOLDER_TEST = "data/data_set/ex_1/other/full/"
 
-y_test_files = sorted(glob.glob(DATASET_FOLDER_TEST+"*other_test*"))
+EMBEDDINGS_FOLDER = "data/embeddings/umberto/other/"
+DATASET_FOLDER = "data/data_set/ex_1/other/full/"
 
-model_name = "BERT"
-split_name = "other"
+y_train_files = sorted(glob.glob(DATASET_FOLDER+"*other_train*"))
+
+y_test_files = sorted(glob.glob(DATASET_FOLDER+"*other_test*"))
+
+model_name = "umberto"
+split_name = "umberto/other"
+
+for k in key_values:
+        X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*train*.pkl"))
+        X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER+"*"+ k + "*test*.pkl"))
+        print(X_train_files)
+        print(X_test_files)
+        print(y_test_files)
+        print(y_train_files)
 
 
-for d in decremental_value:
+        LR.main(_SEED,
+                X_train_files, y_train_files, X_test_files, y_test_files,
+                _OUTPUT_PATH, k , model_name, split_name, _EX_NUMBER, "", "", solver="liblinear", label="construction")
 
-        y_train_files = sorted(glob.glob(DATASET_FOLDER_TRAINING+"*other_train*" +d+ "*" ))
-        
-        for k in key_values:
-                
-                X_train_files = sorted(glob.glob(EMBEDDINGS_FOLDER_TRAINING+ "**train*" +d+ "*" +k+ ".pkl"))
-                X_test_files = sorted(glob.glob(EMBEDDINGS_FOLDER_TEST+ "*" + k + "*test*.pkl"))
-        
-                print(X_train_files)
-                print(y_train_files)
-
-                LR.main(_SEED,
-                        X_train_files, y_train_files, X_test_files, y_test_files,
-                        _OUTPUT_PATH, k , model_name, split_name, _EX_NUMBER, d, "", solver="liblinear", label="construction")
-                
-                
-
-        
-        

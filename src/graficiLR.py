@@ -22,7 +22,7 @@ def plot_multiple_metric_files(csv_files, labels, output_path, title=None):
 
     plt.xlabel("Layer")
     plt.ylabel("Accuracy")
-    plt.ylim(0, 1.0)
+    plt.ylim(0.2, 1.0)
     plt.grid(True)
 
     if title:
@@ -40,23 +40,15 @@ def plot_multiple_metric_files(csv_files, labels, output_path, title=None):
 
 
 csvs = [
-    "data/output/metrics/per_dopo/full/BERT_ex2_UNK___avg_metrics.csv",
-    "data/output/metrics/per_dopo/full/BERT_ex2_PREP___avg_metrics.csv",
-    "data/output/metrics/per_dopo/full/BERT_ex2_CLS___avg_metrics.csv",
-    "data/output/metrics/itwac/per_dopo/full/itwac_ex2____avg_metrics.csv",
-    "data/output/metrics/itwac/pre_lemma_per_dopo/full/itwac_ex2____avg_metrics.csv",
-    "data/output/metrics/fasttext/per_dopo/full/fasttext_ex2____avg_metrics.csv",
-    "data/output/metrics/fasttext/pre_lemma_per_dopo/full/fasttext_ex2____avg_metrics.csv"
+    "data/output/metrics/umberto/simple/full/umberto_ex1_UNK___avg_metrics.csv",
+    "data/output/metrics/umberto/simple/full/umberto_ex1_PREP___avg_metrics.csv",
+    "data/output/metrics/umberto/simple/full/umberto_ex1_CLS___avg_metrics.csv"
 ]
 
 labels = [
-    "UNK per dopo",
-    "PREP per dopo",
-    "CLS per dopo",
-    "BASELINE ITWAC NOUN per dopo",
-    "BASELINE ITWAC PRE LEMMA per dopo",
-    "BASELINE FASTTEXT NOUN per dopo",
-    "BASELINE FASTTEXT PRE LEMMA per dopo"
+    "UNK",
+    "PREP",
+    "CLS"
      
 ]
 

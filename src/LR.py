@@ -246,7 +246,7 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files, output_
 				random_state=seed,
 				max_iter=10000,
 				solver=solver,
-				multi_class="multinomial"   # opzionale ma consigliato
+				# multi_class="multinomial"   # opzionale ma consigliato
 			)
 
 			target = df_train[label].values

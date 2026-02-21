@@ -4,8 +4,8 @@ import embedding
 
 
     
-model = "dbmdz/bert-base-italian-cased"
-prefix = "BERT"
+# model = "dbmdz/bert-base-italian-cased"
+# prefix = "BERT"
 tokenizer_path = "data/tokenizer"
 
 
@@ -114,13 +114,96 @@ tokenizer_path = "data/tokenizer"
 
 # per dopo
 
-output_path = "data/embeddings/bert/semantic/per_dopo"
-split = "semantic"
+# output_path = "data/embeddings/bert/semantic/per_dopo"
+# split = "semantic"
+# perturbed ="no"
+# PATH_INPUT_TEST = "data/data_set/ex_2/distractors/full/"
+# PATH_INPUT_TRAINING = "data/data_set/ex_2/distractors/full/"
+# test_files = sorted(glob.glob(PATH_INPUT_TEST+"*2*distractors_test*"))
+# train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*2*distractors_train*"))
+
+# embedding.main(model,
+#         prefix, tokenizer_path, train_files,test_files,
+#         output_path, split , perturbed)
+
+
+
+
+# # run scivetti
+
+
+# model = "bert-base-cased"
+# prefix = "BERT_ENG"
+
+
+# output_path = "data/embeddings/bert/scivetti/ex1"
+# split = "scivetti"
+# perturbed ="no"
+# PATH_INPUT_TEST = "data/data_set/scivetti/full/"
+# PATH_INPUT_TRAINING = "data/data_set/scivetti/full/"
+# test_files = sorted(glob.glob(PATH_INPUT_TEST+"*1*test*"))
+# train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*1*train*"))
+
+# embedding.main(model,
+#         prefix, tokenizer_path, train_files,test_files,
+#         output_path, split , perturbed)
+
+
+#### run scivetti/noi BERT MULTILNGUAl
+
+# model = "bert-base-multilingual-cased"
+# prefix = "BERT_M"
+
+
+# output_path = "data/embeddings/bert/multilingual/ita_npn/pseudo/"
+# split = "multilingual"
+# perturbed ="no"
+# PATH_INPUT_TEST = "data/data_set/ex_1/pseudo/full/"
+# PATH_INPUT_TRAINING = "data/data_set/ex_1/pseudo/full/"
+# test_files = sorted(glob.glob(PATH_INPUT_TEST+"*1*test*"))
+# train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*1*train*"))
+
+# embedding.main(model,
+#         prefix, tokenizer_path, train_files,test_files,
+#         output_path, split , perturbed)
+
+
+
+
+
+#### Simple su umberto
+
+model = "Musixmatch/umberto-commoncrawl-cased-v1"
+prefix = "UMBERTO"
+
+
+output_path = "data/embeddings/umberto/simple/"
+split = "umberto_simple"
 perturbed ="no"
-PATH_INPUT_TEST = "data/data_set/ex_2/distractors/full/"
-PATH_INPUT_TRAINING = "data/data_set/ex_2/distractors/full/"
-test_files = sorted(glob.glob(PATH_INPUT_TEST+"*2*distractors_test*"))
-train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*2*distractors_train*"))
+PATH_INPUT_TEST = "data/data_set/ex_1/simple/full/"
+PATH_INPUT_TRAINING = "data/data_set/ex_1/simple/full/"
+test_files = sorted(glob.glob(PATH_INPUT_TEST+"*1*test*"))
+train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*1*train*"))
+
+embedding.main(model,
+        prefix, tokenizer_path, train_files,test_files,
+        output_path, split , perturbed)
+
+
+
+#### other su umberto
+
+model = "Musixmatch/umberto-commoncrawl-cased-v1"
+prefix = "UMBERTO"
+
+
+output_path = "data/embeddings/umberto/other/"
+split = "umberto_other"
+perturbed ="no"
+PATH_INPUT_TEST = "data/data_set/ex_1/other/full/"
+PATH_INPUT_TRAINING = "data/data_set/ex_1/other/full/"
+test_files = sorted(glob.glob(PATH_INPUT_TEST+"*1*test*"))
+train_files = sorted(glob.glob(PATH_INPUT_TRAINING+"*1*train*"))
 
 embedding.main(model,
         prefix, tokenizer_path, train_files,test_files,

@@ -84,18 +84,18 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 	
 					print(line)
 					lemma1, prep, lemma2 = line["costr"].strip().split(" ")
-					vec_constr = lemma1 + " [UNK] " + lemma2
+					vec_constr = lemma1 + " <unk> " + lemma2
+					#[unk] per umberto [UNK] per altri
 					sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
-					sentence_prediction = line["context_pre"] + " " + lemma1  + " [MASK] " + lemma2 + " " + line["context_post"]
+					sentence_prediction = line["context_pre"] + " " + lemma1  + " <mask> " + lemma2 + " " + line["context_post"]
+					#[mask] per umberto [MASK] per altri
 					sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
-
 					posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])
-				# sentence_orig_nospace = [x for x in  line["context_pre"] if not x == " "] + [x for x in  line["costr"] if not x == " "]
-				# print("\n\n")
-				# print(''.join(sentence_orig_nospace))
-				# print(sentence_orig_nospace[posizione_preposizione])
-				# input()]
-				
+					# sentence_orig_nospace = [x for x in  line["context_pre"] if not x == " "] + [x for x in  line["costr"] if not x == " "]
+					# print("\n\n")
+					# print(''.join(sentence_orig_nospace))
+					# print(sentence_orig_nospace[posizione_preposizione])
+					# input()
 				else:
 					
 
@@ -149,7 +149,7 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 							posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])
 			
 					elif perturbed == "PN":
-         
+		 
 						if line["other_cxn"] == "_":
 
 							prep, lemma1 = line["costr"].strip().split(" ")
@@ -198,18 +198,25 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 				inputs = tokenizer(sentence, return_tensors="pt")
 				inputs_orig = tokenizer(sentence_orig, return_tensors="pt")
 				inputs_prediction = tokenizer(sentence_prediction, return_tensors="pt")
-				#print(sentence_orig)
+				# print(sentence_orig)
 				tokens = tokenizer.tokenize(sentence_orig)
 				print(tokens)
 
 				tot_caratteri = 0
 				i = 0
 				while i<len(tokens) and tot_caratteri<posizione_preposizione:
-					#print(tokens[i])
-					curr_chars = len([x for x in tokens[i] if not x == "#"])
+					
+
+					# curr_chars = len([x for x in tokens[i] if not x == "#"])
+					# curr_chars = len([x for x in tokens[i] if not x == "▁"])
+					curr_chars = len([x for x in tokens[i] if not x in[ "▁", "#"]])
+     
+					# print(curr_chars, tokens[i])
+					# input()
 					tot_caratteri += curr_chars
 					i+=1
 				print(tokens[i])
+				# input()
 				#print("Trovata preposizione", tokens[i], "in posizione", i, "con id", inputs_orig["input_ids"][0].tolist()[i+1])
 				
 				#Converte la frase in ID tokenizzati, creando tensori PyTorch
@@ -225,10 +232,15 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 					#print(len(outputs.hidden_states))
 					#outputs: contiene logits e tutti gli hidden_states (cioè i vettori di ogni token in ogni layer)
 					#inputs["input_ids"][0].tolist().index(tokenizer.mask_token_id)
-					target_id = inputs["input_ids"][0].tolist().index(101)
-					target_id_prediction = inputs_prediction["input_ids"][0].tolist().index(104)
+					target_id = inputs["input_ids"][0].tolist().index(3)
+	 #umberto [unk] 3
+	 #101 ita bert
+	 #100 eng e multilingual bert
+					target_id_prediction = inputs_prediction["input_ids"][0].tolist().index(32004)
 					#Converte la sequenza input_ids in una lista e cerca l’indice in cui compare il token [UNK] (assunto avere ID 50280) per ModernBERT
-					# MASK 104 per BERT
+					# umberto [mask] 32004
+	 				# MASK 104 per BERT ita
+					#103 eng e multilingual bert
 					#print(sentence)
 					#print(target_id)
 					predicted_token_id = output_prediction.logits[0, target_id_prediction].argmax(axis=-1)

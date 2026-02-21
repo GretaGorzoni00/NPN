@@ -7,10 +7,10 @@ import pathlib
 
 def write_csv(file_path, rows, delimiter=";"):
 
-    rows.to_csv(file_path, sep=delimiter, index=False)
+	rows.to_csv(file_path, sep=delimiter, index=False)
 	# with open(file_path, "w", encoding="utf-8", newline="") as f:
 	# 	writer = csv.DictWriter(f, delimiter=delimiter,
-    #                     fieldnames=["ID", "NPN", "construction", 'preposition',
+	#                     fieldnames=["ID", "NPN", "construction", 'preposition',
 	# 								'noun', 'pre_lemma', 'context_pre', "costr",
 	# 								'context_post','number_of_noun',
 	# 								'Type', "other_cxn",
@@ -21,12 +21,12 @@ def write_csv(file_path, rows, delimiter=";"):
 	# 		writer.writerows(dict(el))
 
 def main(df_minima_path, df_dataset_path,
-         n_samples, random_seed,
-         bucket_str_fun,
-         constraint_on_rows = ["noun", "construction"],
-         constrain_on_buckets = ["split"],
-         sep = ";",
-         output_folder = "data/sampling/"):
+		 n_samples, random_seed,
+		 bucket_str_fun,
+		 constraint_on_rows = ["noun", "construction"],
+		 constrain_on_buckets = ["split"],
+		 sep = ";",
+		 output_folder = "data/sampling/"):
 
 	timestr = time.strftime("%Y%m%d-%H%M%S")
 	df_minima_basename = pathlib.Path(df_minima_path).stem
@@ -45,7 +45,7 @@ def main(df_minima_path, df_dataset_path,
 	)
 
 	df_buckets.to_csv(f"{output_folder}/{timestr}_{df_minima_basename}.csv",
-                	sep=sep, index=False)
+					sep=sep, index=False)
 
 	# For reproducible sampling per run
 	rng = random.Random(random_seed)
@@ -119,20 +119,34 @@ def main(df_minima_path, df_dataset_path,
 	return ret
 
 if __name__ == "__main__":
+	import argparse
+	
+	parser = argparse.ArgumentParser(description="Sampling righe per lemma")
+	parser.add_argument("--SEED", type=int, default=3569, help="Seed per campionamento")
+	parser.add_argument("--N_SAMPLES", type=int, default=5, help="Numero di campionamenti da effettuare")
+	parser.add_argument("--df_minima_path", type=str, required=True, help="Path al file CSV con minima per bucket")
+	parser.add_argument("--df_dataset_path", type=str, required=True, help="Path al file CSV con il dataset completo da cui campionare")
+	parser.add_argument("--output_folder", type=str, required=True, help="Cartella di output per i file filtrati")
+	parser.add_argument("--experiment_type", type=str, required=True, help="Tipo di esperimento (es. '1, 2, scivetti')")
+	parser.add_argument("--configuration", type=str, required=True, help="Strategia di split (es. 'simple', 'other', 'pseudo')")
+	
+	args = parser.parse_args()
 
-	_SEED = 3569
-	_N_SAMPLES = 5
+	# df_minima_path = "data/ex_1_scivetti.csv"
+	# df_dataset_path = "data/data_set/scivetti/cxns_normalized_max30.csv"
+	# bucket_str_fun = lambda x: f"{x.split}|{x.construction}|{x.preposition}|{x.Type}|{x.other_cxn}"
+	bucket_str_fun = lambda x: f"{x.split}|{x.construction}|{x.preposition}|{x.Type}|{x.other_cxn}|{x.meaning}"
 
-	df_minima_path = "/Users/ludovica/Documents/projects/NPN/data/ex1_other.csv"
-	df_dataset_path = "/Users/ludovica/Documents/projects/NPN/data/source/full_dataset.csv"
-	bucket_str_fun = lambda x: f"{x.split}|{x.construction}|{x.preposition}|{x.Type}|{x.other_cxn}"
 
-	output_folder = "/Users/ludovica/Documents/projects/NPN/data/data_set/ex_1"
-	simple ="other"
-	ex = "1"
+	# output_folder = "data/data_set/"
+	# simple ="scivetti"
+	# ex = "1"
 
-	dataset_dict = main(df_minima_path, df_dataset_path, _N_SAMPLES, _SEED, bucket_str_fun)
+	dataset_dict = main(args.df_minima_path, args.df_dataset_path, args.N_SAMPLES, args.SEED, bucket_str_fun)
 
 	for it in dataset_dict:
-		write_csv(f"{output_folder}/{simple}/full/ex{ex}_{simple}_train_{it}.csv", dataset_dict[it]["train"])
-		write_csv(f"{output_folder}/{simple}/full/ex{ex}_{simple}_test_{it}.csv", dataset_dict[it]["test"])
+		if not os.path.exists(f"{args.output_folder}/{args.experiment_type}/{args.configuration}/full/"):
+			os.makedirs(f"{args.output_folder}/{args.experiment_type}/{args.configuration}/full/", exist_ok=True)
+		
+		write_csv(f"{args.output_folder}/{args.experiment_type}/{args.configuration}/full/ex{args.experiment_type}_{args.configuration}_train_{it}.csv", dataset_dict[it]["train"])
+		write_csv(f"{args.output_folder}/{args.experiment_type}/{args.configuration}/full/ex{args.experiment_type}_{args.configuration}_test_{it}.csv", dataset_dict[it]["test"])
