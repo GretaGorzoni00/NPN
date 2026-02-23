@@ -374,6 +374,10 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 
+	if not os.path.exists(args.output_path):
+		os.makedirs(args.output_path, exist_ok=True)
+
+
 	main(
 		args.seed,
 		args.X_train,

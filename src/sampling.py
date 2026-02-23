@@ -4,6 +4,7 @@ import sample_dataset
 import csv
 import time
 import pathlib
+import os
 
 def write_csv(file_path, rows, delimiter=";"):
 
@@ -148,5 +149,5 @@ if __name__ == "__main__":
 		if not os.path.exists(f"{args.output_folder}/{args.experiment_type}/{args.configuration}/full/"):
 			os.makedirs(f"{args.output_folder}/{args.experiment_type}/{args.configuration}/full/", exist_ok=True)
 		
-		write_csv(f"{args.output_folder}/{args.experiment_type}/{args.configuration}/full/ex{args.experiment_type}_{args.configuration}_train_{it}.csv", dataset_dict[it]["train"])
-		write_csv(f"{args.output_folder}/{args.experiment_type}/{args.configuration}/full/ex{args.experiment_type}_{args.configuration}_test_{it}.csv", dataset_dict[it]["test"])
+		write_csv(f"{args.output_folder}/{args.experiment_type}/{args.configuration}/full/{args.experiment_type}_{args.configuration}_train_{it}.csv", dataset_dict[it]["train"])
+		write_csv(f"{args.output_folder}/{args.experiment_type}/{args.configuration}/full/{args.experiment_type}_{args.configuration}_test_{it}.csv", dataset_dict[it]["test"])

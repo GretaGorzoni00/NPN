@@ -7,7 +7,7 @@ import sys
 import os
 import pickle
 
-def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_path, split, perturbed):
+def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_path, split, perturbed, UNK, MASK, UNK_ID, MASK_ID):
 	
 	
 		# === FUNZIONE PER SALVARE EMBEDDINGS ===
@@ -84,10 +84,10 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 	
 					print(line)
 					lemma1, prep, lemma2 = line["costr"].strip().split(" ")
-					vec_constr = lemma1 + " <unk> " + lemma2
+					vec_constr = lemma1 + " " + UNK + " " + lemma2
 					#[unk] per umberto [UNK] per altri
 					sentence = line["context_pre"] + " " + vec_constr + " " + line["context_post"]
-					sentence_prediction = line["context_pre"] + " " + lemma1  + " <mask> " + lemma2 + " " + line["context_post"]
+					sentence_prediction = line["context_pre"] + " " + lemma1  + " " + MASK + " " + lemma2 + " " + line["context_post"]
 					#[mask] per umberto [MASK] per altri
 					sentence_orig = line["context_pre"] + " " + line["costr"] + " " + line["context_post"]
 					posizione_preposizione = len(lemma1) + len([x for x in line["context_pre"] if not x == " "])
@@ -232,11 +232,11 @@ def main(model_id, prefix, tokenizer_path, train_dataset, test_dataset, output_p
 					#print(len(outputs.hidden_states))
 					#outputs: contiene logits e tutti gli hidden_states (cioè i vettori di ogni token in ogni layer)
 					#inputs["input_ids"][0].tolist().index(tokenizer.mask_token_id)
-					target_id = inputs["input_ids"][0].tolist().index(3)
+					target_id = inputs["input_ids"][0].tolist().index(UNK_ID)
 	 #umberto [unk] 3
 	 #101 ita bert
 	 #100 eng e multilingual bert
-					target_id_prediction = inputs_prediction["input_ids"][0].tolist().index(32004)
+					target_id_prediction = inputs_prediction["input_ids"][0].tolist().index(MASK_ID)
 					#Converte la sequenza input_ids in una lista e cerca l’indice in cui compare il token [UNK] (assunto avere ID 50280) per ModernBERT
 					# umberto [mask] 32004
 	 				# MASK 104 per BERT ita
@@ -319,5 +319,13 @@ if __name__ == "__main__":
 	parser.add_argument("-o", "--output_path", default = "data/output/embeddings")
 	parser.add_argument("-s", "--split", default = "pseudo")
 	parser.add_argument("-p", "--perturbed", default = "no")
+	parser.add_argument("--UNK", default = "[UNK]")
+	parser.add_argument("--MASK", default = "[MASK]")
+	parser.add_argument("--UNK_ID", type=int, default = 101)
+	parser.add_argument("--MASK_ID", type=int, default = 104)
 	args = parser.parse_args()
-	main(args.model, args.prefix, args.tokenizer_path, args.train, args.test, args.output_path, args.split, args.perturbed)
+ 
+	if not os.path.exists(args.output_path):
+		os.makedirs(args.output_path, exist_ok=True)
+ 
+	main(args.model, args.prefix, args.tokenizer_path, args.train, args.test, args.output_path, args.split, args.perturbed, args.UNK, args.MASK, args.UNK_ID, args.MASK_ID)
