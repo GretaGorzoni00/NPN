@@ -440,7 +440,7 @@ do
   done
 
 
-for k in UNK CLS PREP
+for k in UNK PREP CLS
 do
   python3 src/LR.py \
     --seed 42 \

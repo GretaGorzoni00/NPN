@@ -31,10 +31,11 @@ def plot_metrics(df_metrics,
 	plt.figure(figsize=(10, 6))
 
 	# Plot delle 4 metriche con le rispettive barre di errore
-	plt.errorbar(
-		df_metrics["layer"], df_metrics["mean_accuracy"], yerr=df_metrics["std_accuracy"],
-		fmt='-o', capsize=4, label="Accuracy"
-	)
+	if "mean_accuracy" in df_metrics:
+		plt.errorbar(
+			df_metrics["layer"], df_metrics["mean_accuracy"], yerr=df_metrics["std_accuracy"],
+			fmt='-o', capsize=4, label="Accuracy"
+		)
 	plt.errorbar(
 		df_metrics["layer"], df_metrics["mean_precision"], yerr=df_metrics["std_precision"],
 		fmt='-s', capsize=4, label="Precision"
@@ -94,8 +95,9 @@ def save_metrics_to_csv(metrics_all_layers, metrics_by_label,
 		csv_path_lbl = os.path.join(output_path_metrics, csv_name_lbl)
 		df_lbl.to_csv(csv_path_lbl, index=False)
 		print(f"Per-label results saved in: {csv_path_lbl}")
-
-	print(df)
+  
+		# plot_metrics(df_lbl, model, experiment, key, decremental,
+		# 			perturbed, output_path, split, sampled, clf_name)
 
 	plot_metrics(df, model, experiment, key, decremental,
 				perturbed, output_path, split, sampled, clf_name)
@@ -273,6 +275,7 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files,
 
 	splits_data = []
 	metrics = initialize_metrics(label, layer_range)
+ 
 
 	for i, (X_train_path, y_train_path, X_test_path, y_test_path) in \
 	  	enumerate(
@@ -294,11 +297,6 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files,
 				clf = LogisticRegression(random_state=seed, max_iter=10000, solver=solver)
 			elif clf_name == "SVM":
 				clf = LinearSVC(random_state=seed, max_iter=10000)
-
-
-			# curr_train = X_train[:, n, :]
-			# print(curr_train.shape)
-			# input()
    
 			clf.fit(X_train[:, n, :], y_train)
 			preds = clf.predict(X_test[:, n, :])
