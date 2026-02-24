@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.model_selection import train_test_split
 import sys
@@ -9,6 +11,7 @@ import random
 import math
 import argparse
 import os
+import copy
 import matplotlib.pyplot as plt
 from collections import Counter
 
@@ -18,9 +21,10 @@ MEANINGS = [
 	"greater_plurality/accumulation",
 ]
 
+
 def plot_metrics(df_metrics,
                 model, experiment, key, decremental,
-				perturbed, output_path, split, sampled):
+				perturbed, output_path, split, sampled, clf_name):
 
 
 	#blocco seguente plotta accuracy, precision, recall, f1
@@ -53,32 +57,49 @@ def plot_metrics(df_metrics,
 	plt.tight_layout()
 
 	# Salva grafico
-	img_name = f"{model}_{experiment}_{key}_{decremental}_{perturbed}_metrics.png"
+	img_name = f"{model}_{experiment}_{key}_{clf_name}_{decremental}_pmetrics.png"
 	output_path_graph = output_path + f"graphs/{split}/{sampled}"
 	img_path = os.path.join(output_path_graph, img_name)
 	plt.savefig(img_path, dpi=300)
 	print(f"Grafico salvato in: {img_path}\n")
 
+
 def save_metrics_to_csv(metrics_all_layers, metrics_by_label,
 						model, experiment, key, decremental,
-						perturbed, output_path, split, sampled,
+						perturbed, output_path, split, sampled, clf_name,
 	   					label):
+
+	if len(metrics_all_layers) == 1:
+		print("Warning: Only one layer's metrics collected.")
+		for i in range(2, 13):
+			new_result = copy.deepcopy(metrics_all_layers[0])
+			new_result["layer"] = i  # increment layer number for clarity
+			metrics_all_layers.append(new_result)
+			if label == "meaning":
+				new_result_lbl = copy.deepcopy(metrics_by_label[0])
+				new_result_lbl["layer"] = i
+				metrics_by_label.append(new_result_lbl)
+
 	df = pd.DataFrame(metrics_all_layers)
-	csv_name = f"{model}_{experiment}_{key}_{decremental}_{perturbed}_avg_metrics.csv"
+	csv_name = f"{model}_{experiment}_{key}_{clf_name}_{decremental}_pavg_metrics.csv"
 	output_path_metrics = output_path + f"metrics/{split}/{sampled}/"
 	csv_path = os.path.join(output_path_metrics, csv_name)
 	df.to_csv(csv_path, index=False)
 	print(f"\nRisultati medi salvati in: {csv_path}")
 
+
 	if label == "meaning":
 		df_lbl = pd.DataFrame(metrics_by_label)
-		csv_name_lbl = f"{model}_{experiment}_{key}_{decremental}_{perturbed}_avg_metrics_by_label.csv"
+		csv_name_lbl = f"{model}_{experiment}_{key}_{clf_name}_{decremental}_pavg_metrics_by_label.csv"
 		csv_path_lbl = os.path.join(output_path_metrics, csv_name_lbl)
 		df_lbl.to_csv(csv_path_lbl, index=False)
 		print(f"Per-label results saved in: {csv_path_lbl}")
 
+	print(df)
+
 	plot_metrics(df, model, experiment, key, decremental,
-				perturbed, output_path, split, sampled)
+				perturbed, output_path, split, sampled, clf_name)
+
 
 def initialize_metrics(label, layer_range):
 	metrics = {}
@@ -104,7 +125,11 @@ def compute_overall_metrics(metrics, label):
 
 	metrics_all_layers = []
 	metrics_by_label = []
+
 	for n in metrics:
+		if len(metrics[n]["accuracy"]) == 0:
+			print(f"Warning: No metrics collected for layer {n}. Skipping.")
+			continue
 		layer_results = {
 			"layer": n,
 			"mean_accuracy": np.mean(metrics[n]["accuracy"]),
@@ -184,16 +209,49 @@ def create_data(X_train_path, y_train_path,
 		emb_train = pd.read_pickle(X_train_path)
 		emb_test = pd.read_pickle(X_test_path)
 	else:
-		emb_train = pd.read_csv(X_train_path, header=None, sep=" ")
-		emb_test = pd.read_csv(X_test_path, header=None, sep=" ")
+		emb_train = []
+		emb_test = []
+		for line in open(X_train_path, "r"):
+			line = line.strip().split()
+			line[1:] = (float(x) for x in line[1:])
+			emb_train.append(line)
+		for line in open(X_test_path, "r"):
+			line = line.strip().split()
+			line[1:] = (float(x) for x in line[1:])
+			emb_test.append(line)
+
+		
+		# emb_test = pd.DataFrame(emb_test)
 
 	if is_contextual:
-		X_train = np.array([np.array(emb[f"{key}_layer_{n}"]) for emb in emb_train for n in range(1, layer_range+1)])
-		X_test = np.array([np.array(emb[f"{key}_layer_{n}"]) for emb in emb_test for n in range(1, layer_range+1)])
+		X_train = []
+		X_test = []
+		for emb in emb_train:
+			layers_emb = []
+			for n in range(1, layer_range+1):
+				layer_emb = np.array(emb[f"{key}_layer_{n}"])
+				layers_emb.append(layer_emb)
+			X_train.append(layers_emb)
+		for emb in emb_test:
+			layers_emb = []
+			for n in range(1, layer_range+1):
+				layer_emb = np.array(emb[f"{key}_layer_{n}"])
+				layers_emb.append(layer_emb)
+			X_test.append(layers_emb)
+
+		X_train = np.array(X_train)
+		X_test = np.array(X_test)
 	else:
-		# FastText o altri embedding statici
-		X_train = np.array([np.array(emb_train.drop(columns=[0]).values)])
-		X_test = np.array([np.array(emb_test.drop(columns=[0]).values)])
+		X_train = []
+		X_test = []
+
+		for emb in emb_train:
+			X_train.append(np.array([emb[1:]]))  # assuming the first column is an ID or similar
+		for emb in emb_test:
+			X_test.append(np.array([emb[1:]]))  # assuming the first column is an ID or similar
+
+		X_train = np.array([x for x in X_train])
+		X_test = np.array([x for x in X_test])
 
 	targets = df_train[label_type].values
 	if label_type == "construction":
@@ -203,7 +261,7 @@ def create_data(X_train_path, y_train_path,
 
 def main(seed, X_train_files, y_train_files, X_test_files, y_test_files,
 		output_path, key, model, split, experiment, decremental, perturbed,
-		is_contextual, clf, solver = "liblinear", label = "construction",
+		is_contextual, clf_name, solver = "liblinear", label = "construction",
 		n_layers = 12):
 
 	sampled = "full"
@@ -225,38 +283,43 @@ def main(seed, X_train_files, y_train_files, X_test_files, y_test_files,
 			y_train, y_test, \
    			targets = create_data(X_train_path, y_train_path,
 									X_test_path, y_test_path,
-		  							key, layer_range, is_contextual, label)
+		  							key, n_layers, is_contextual, label)
 			splits_data.append((X_train, y_train, X_test, y_test, targets))
 
 	for i, (X_train, y_train, X_test, y_test, _) in enumerate(splits_data):
 		split_idx = i + 1
 		layer_pred_dict = {"gold": y_test.tolist()}
 		for n in range(X_train.shape[1]):
-			if clf == "logistic_regression":
+			if clf_name == "logistic_regression":
 				clf = LogisticRegression(random_state=seed, max_iter=10000, solver=solver)
-			elif clf == "SVM":
+			elif clf_name == "SVM":
 				clf = LinearSVC(random_state=seed, max_iter=10000)
 
-			clf.fit(X_train[:, n].reshape(-1, 1), y_train)
-			preds = clf.predict(X_test[:, n].reshape(-1, 1))
 
-			layer_pred_dict[f"layer_{n}"] = preds.tolist()
+			# curr_train = X_train[:, n, :]
+			# print(curr_train.shape)
+			# input()
+   
+			clf.fit(X_train[:, n, :], y_train)
+			preds = clf.predict(X_test[:, n, :])
 
-			update_metrics(metrics, n, y_test, preds, label)
+			layer_pred_dict[f"layer_{n+1}"] = preds.tolist()
+
+			update_metrics(metrics, n+1, y_test, preds, label)
 
 		df_preds = pd.DataFrame(layer_pred_dict)
 		output_path_pred = output_path + f"predictions/{split}/{sampled}/"
-		csv_path = os.path.join(output_path_pred, f"{model}_{experiment}_{key}_split{split_idx}_{decremental}_{perturbed}_predictions.csv")
+		csv_path = os.path.join(output_path_pred, f"{model}_{experiment}_{key}_split{split_idx}_{clf_name}_{decremental}_predictions.csv")
 		df_preds.to_csv(csv_path, index=False)
 		print(f"    Predizioni salvate in: {csv_path}")
 
-	metrics_all_layers, metrics_by_label = compute_overall_metrics(metrics)
+	metrics_all_layers, metrics_by_label = compute_overall_metrics(metrics, label)
 
 	# salva risultati in CSV
 	save_metrics_to_csv(metrics_all_layers, metrics_by_label,
 							model, experiment, key, decremental,
 							perturbed, output_path, split, sampled,
-	   						label)
+	   						clf_name, label)
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
@@ -274,7 +337,7 @@ if __name__ == "__main__":
 	parser.add_argument("-p", "--perturbed", default="")
 	parser.add_argument("--contextual", action="store_true",
                     help="Whether the embeddings are contextual (e.g., BERT) or static (e.g., FastText)")
-	parser.add_argument("--clf", default="logistic_regression",
+	parser.add_argument("--clf_name", default="logistic_regression",
                     choices=["logistic_regression", "SVM"],
                     help="Classifier to use (default: logistic_regression)")
 	parser.add_argument("--solver", default="liblinear",
@@ -311,7 +374,7 @@ if __name__ == "__main__":
 		args.decremental,
 		args.perturbed,
 		args.contextual,
-		args.clf,
+		args.clf_name,
 		solver=args.solver,
 		label=args.label
 	)

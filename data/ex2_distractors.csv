@@ -1,0 +1,11 @@
+split;construction;preposition;Type;other_cxn;meaning;min_required
+train;yes;*;*;*;greater_plurality/accumulation;60
+train;yes;*;*;*;juxtaposition/contact;60
+train;yes;a;*;*;succession/iteration/distributivity;30
+train;yes;su;*;*;succession/iteration/distributivity;30
+train;no;a;*;*;PNPN;15
+train;no;a;*;*;!PNPN;15
+train;no;su;*;*;*;30
+test;yes;per;*;*;*;50
+test;yes;dopo;*;*;*;50
+other;*;*;*;*;*;1

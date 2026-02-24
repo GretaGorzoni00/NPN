@@ -1,0 +1,7 @@
+split;construction;preposition;Type;other_cxn;meaning;min_required
+train;yes;*;*;*;succession/iteration/distributivity;120
+train;yes;*;*;*;juxtaposition/contact;120
+train;no;*;*;*;distractor;240
+test;yes;*;*;*;succession/iteration/distributivity;30
+test;yes;*;*;*;juxtaposition/contact;30
+test;no;*;*;*;distractor;60
