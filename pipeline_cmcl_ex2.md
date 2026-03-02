@@ -1,6 +1,8 @@
-1. campionamento già eseguito per ex 1
+1. campionamento.py has already been carried out for Experiment 1.
 
-2. sampling
+2. sampling.py
+
+```
 
 python3 src/sampling.py \
  		--df_minima_path data/ex2_scivetti.csv \
@@ -22,19 +24,22 @@ python3 src/sampling.py \
   		--output_folder data/data_set/ \
  		--experiment_type ex2 \
   		--configuration per_dopo
+```
 
 
 
-3. control classifier 
+3. Data for Control Classifier
+```
 
 python3 src/control_classifier.py --files_train data/data_set/ex2/simple/full/*train*.csv \
                 --files_test data/data_set/ex2/simple/full/*test*.csv \
                 --control_dir data/data_set/ex2/simple/control/ \
                 --_FIELD noun \
                 --_LABEL_FIELD meaning
+```
 
 
-4. estrazione embeddings -- fasttext
+4. Embeddings extraction  -- fasttext
 
 ```
 
@@ -66,7 +71,7 @@ python3 src/fasttext_embeddings.py --fasttext_model static_model/cc.it.300.bin \
 
 ```
 
-5. estrazione embeddings -- word2vec
+5. Embeddings extraction  -- word2vec
 
 ```
 
@@ -97,7 +102,7 @@ python3 src/w2v_embeddings.py --w2vec_model static_model/vettori_itwac.txt \
 
 ```
 
-6. estrazione embeddings -- glove
+6. Embeddings extraction  -- Glove
 
 ```
 
@@ -109,7 +114,7 @@ python3 src/w2v_embeddings.py --w2vec_model static_model/glove.6B.300d.txt \
 
 ```
 
-7. estrazione embeddings encoder - bert base cased
+7. Embeddings extraction -- bert base cased eng
 
 ```
 
@@ -129,7 +134,7 @@ python3 src/embedding.py \
 
 ```
 
-8. estrazione embeddings encoder - bert base cased ita
+8. Embeddings extraction - bert base cased ita
 
 ```
 python3 src/embedding.py \
@@ -164,7 +169,7 @@ python3 src/embedding.py \
 ```
 
 
-9. estrazione embeddings encoder - mBERT e xmlr
+9. Embeddings extraction multilingual - mBERT e xmlr
 
 ```
 
@@ -263,7 +268,7 @@ python3 src/embedding.py \
 
 ```
 
-10. embeddings encoder - UmBERTo
+10. Embeddings extraction - UmBERTo
 
 
 ```
@@ -300,7 +305,7 @@ python3 src/embedding.py \
 
 ```
 
-5. decremental training
+5. Decremental Training
 
 ```
 
@@ -335,11 +340,7 @@ python3 src/decremental_training.py \
 ```
 
 
-11. classificatore
-
-
-BERT ITA 
-SIMPLE
+11. Probing Classifier -- BERT ITA 
 
 ```
 
@@ -385,9 +386,7 @@ do
 
 ```
 
-12. classifictaore 
-
-BERT ENG 
+12. Probing Classifier -- BERT ENG 
 
 ```
 
@@ -413,10 +412,7 @@ do
 ```
 
 
-13. classificatore m-BERT
-
-m-BERT 
-ita simple
+13. Probing Classifier -- m-BERT ITA
 
 ```
 
@@ -462,7 +458,7 @@ do
 
 ```
 
-eng
+14. Probing Classifier -- m-BERT ENG
 
 ```
 
@@ -487,7 +483,9 @@ do
 
  ``` 
 
-14. umberto
+15. Probing Classifier -- UmBERTo
+
+```
 
 
 
@@ -530,12 +528,14 @@ do
     --label meaning
   done
 
+```
 
 
-15. xml_roberta
+
+16. Probing Classifier -- RoBERTa ITA
 
 
-simple ita
+```
 
 
 for k in UNK CLS PREP
@@ -578,9 +578,15 @@ do
     --label meaning
   done
 
+```
 
 
-  eng
+
+17. Probing Classifier -- RoBERTa ENG
+
+
+```
+
 
 for k in UNK CLS PREP
 do
@@ -601,10 +607,12 @@ do
     --label meaning
   done
 
+```
 
 
+18. Probing Classifier -- baseline fasttext ITA
 
-16. baseline fasttext costrN
+```
 
 python3 src/LR.py \
   --seed 42 \
@@ -665,8 +673,11 @@ python3 src/LR.py \
   --solver lbfgs \
   --label meaning
 
+```
 
-18. itwac ita 
+19. Probing Classifier -- word2vec ITA
+
+```
 
 python3 src/LR.py \
   --seed 42 \
@@ -727,7 +738,11 @@ python3 src/LR.py \
   --solver lbfgs \
   --label meaning
 
-20. baseline glove eng 
+```
+
+20. Probing Classifier -- Glove ENG
+
+```
 
 python3 src/LR.py \
   --seed 42 \
@@ -743,7 +758,11 @@ python3 src/LR.py \
   --solver lbfgs \
   --label meaning
 
-21. fasttext eng
+```
+
+21. Probing Classifier -- fasttext ENG
+
+```
 
 python3 src/LR.py \
   --seed 42 \
@@ -759,8 +778,12 @@ python3 src/LR.py \
   --solver lbfgs \
   --label meaning
 
+```
 
-22. decremental
+
+22. Probing Classifier -- decremental
+
+```
 
 for d in 240 120 60
 do
@@ -786,7 +809,11 @@ do
     done
 done
 
-23. control
+```
+
+23. Probing Classifier -- control
+
+```
 
 for k in UNK CLS PREP
 do
