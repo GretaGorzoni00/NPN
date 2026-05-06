@@ -104,13 +104,13 @@ The visualizations provide a geometric exploration of the embedding space for:
 
 ---
 
-### Paper
+## Paper
 
 [CMCL 2026 paper — forthcoming]
 
 ---
 
-### Dataset (Zenodo)
+## Dataset (Zenodo)
 
 The data are based on the Italian NPN constructional family described in Masini (2024).
 
@@ -118,7 +118,7 @@ The data are based on the Italian NPN constructional family described in Masini 
 
 ---
 
-### Poster
+## Poster
 
 [![CMCL 2026 Poster](assets/poster_preview.png)](assets/poster_cmcl2026.pdf)
 
