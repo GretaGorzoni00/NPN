@@ -12,13 +12,7 @@ Repository for the CMCL 2026 paper:
 
 This repository contains the code, datasets, and supplementary materials for the study of the Italian **NPN (noun–preposition–noun)** constructional family (e.g. *strato su strato*, *faccia a faccia*, *giorno dopo giorno*) within a **Construction Grammar** and **interpretability** framework.
 
-The project investigates whether and to what extent contextual embeddings extracted from BERT-family models encode:
-
-- constructional identity
-- construction-specific semantic information
-- distinctions between NPN constructions and structurally related distractors
-
-The experiments are based on probing classifiers trained over contextual embeddings extracted across Transformer layers.
+The project investigates whether and to what extent contextual embeddings extracted from BERT-family models encode constructional information. The experiments are based on probing classifiers trained over contextual embeddings extracted across BERT layers.
 
 ---
 
@@ -26,42 +20,38 @@ The experiments are based on probing classifiers trained over contextual embeddi
 
 ```bash
 NPN/
+
 │
-├── data/                     # datasets and train/test splits
-├── probing/                  # probing experiments
-├── embeddings/               # contextual embedding extraction
-├── pca/                      # PCA visualizations
-├── plots/                    # figures and confusion matrices
-├── annotazione.md            # annotation guidelines
-└── README.md
+├── data/                           # datasets, annotation files, train/test splits, and extracted embeddings
+│   │
+│   ├── _legacy/                    # deprecated or previous experimental versions of datasets/scripts
+│   │
+│   ├── agreement/                  # inter-annotator agreement files and evaluation material
+│   │
+│   ├── data_set/                   # final curated datasets used in the experiments
+│   │
+│   ├── embeddings/                 # extracted contextual embeddings (.csv/.pkl) from BERT layers
+│   │
+│   ├── output/                     # outputs of probing experiments, predictions, and metrics
+│   │
+│   ├── source/                     # raw source data extracted from CORIS and preprocessing resources
+│   │
+│   ├── tokenizer/                  # tokenizer resources and tokenized intermediate files
+│
+│
+├── src/                            # main Python source code for preprocessing, probing, and evaluation
+│
+├── pipeline_cmcl_ex1.md            # step-by-step pipeline description for CMCL Experiment 1
+├── pipeline_cmcl_ex2.md            # step-by-step pipeline description for CMCL Experiment 2
+│
+├── requirements.txt                # Python dependencies required to reproduce the experiments
+│
+└── README.md                       # project documentation
+
 ```
 
 ---
 
-## Dataset
-
-The repository includes datasets for:
-
-- construction identification
-- semantic disambiguation
-- distractor configurations
-- cross-preposition generalization experiments
-
-The data are based on the Italian NPN constructional family described in Masini (2024).
-
-### Semantic Labels
-
-The semantic disambiguation task includes the following constructional meanings:
-
-- `succession/iteration/distributivity`
-- `greater_plurality/accumulation`
-- `juxtaposition/contact`
-
-Detailed annotation guidelines are available in:
-
-```bash
-annotazione.md
-```
 
 ---
 
@@ -82,11 +72,32 @@ The probing pipeline:
 
 ---
 
+
+## Reproducing the experiments
+
+To reproduce the experiments, first create and activate a Python virtual environment, then install the required dependencies:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate   # macOS/Linux
+pip install -r requirements.txt
+```
+
+The repository is organized as a modular pipeline covering dataset preparation, contextual embedding extraction, probing classification, and evaluation.
+
+Detailed step-by-step instructions for reproducing the experiments presented in the CMCL 2026 paper are available in:
+
+- `pipeline_cmcl_ex1.md` — construction identification experiments
+- `pipeline_cmcl_ex2.md` — semantic disambiguation experiments
+
+
+## Related Resources
+
 ## PCA Visualizations
 
 Interactive PCA visualizations of contextual embeddings across Transformer layers are available here:
 
-🔗 https://gretagorzoni00.github.io/NPN_contextual_embeddings/
+https://gretagorzoni00.github.io/NPN_contextual_embeddings/
 
 The visualizations provide a geometric exploration of the embedding space for:
 
@@ -94,29 +105,13 @@ The visualizations provide a geometric exploration of the embedding space for:
 - semantic clusters
 - layer-wise representation dynamics
 
-Animated versions are also available.
-
----
-
-## Models
-
-The experiments use several BERT-family models, including:
-
-- `dbmdz/bert-base-italian-cased`
-- `UmBERTo`
-- multilingual BERT variants
-
-Embeddings are extracted using Hugging Face Transformers.
-
----
-
-## Related Resources
-
 ### Paper
 
 [CMCL 2026 paper — forthcoming]
 
 ### Dataset (Zenodo)
+
+The data are based on the Italian NPN constructional family described in Masini (2024).
 
 [Zenodo dataset link]
 
