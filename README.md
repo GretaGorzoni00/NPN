@@ -89,9 +89,9 @@ Detailed step-by-step instructions for reproducing the experiments presented in 
 
 
 # Related Resources
+---
 
 ## PCA Visualizations
-
 Interactive PCA visualizations of contextual embeddings across Transformer layers are available here:
 
 https://gretagorzoni00.github.io/NPN_contextual_embeddings/
