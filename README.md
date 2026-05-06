@@ -114,7 +114,7 @@ The visualizations provide a geometric exploration of the embedding space for:
 
 The data are based on the Italian NPN constructional family described in Masini (2024).
 
-[[Zenodo dataset link](https://zenodo.org/records/18716255)]
+[[Zenodo dataset link](https://zenodo.org/records/18268135)]
 
 ---
 
