@@ -102,15 +102,21 @@ The visualizations provide a geometric exploration of the embedding space for:
 - semantic clusters
 - layer-wise representation dynamics
 
+---
+
 ### Paper
 
 [CMCL 2026 paper — forthcoming]
+
+---
 
 ### Dataset (Zenodo)
 
 The data are based on the Italian NPN constructional family described in Masini (2024).
 
 [[Zenodo dataset link](https://zenodo.org/records/18716255)]
+
+---
 
 ### Poster
 
