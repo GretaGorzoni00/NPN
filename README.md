@@ -88,7 +88,7 @@ Detailed step-by-step instructions for reproducing the experiments presented in 
 - `pipeline_cmcl_ex2.md` — semantic disambiguation experiments
 
 
-## Related Resources
+# Related Resources
 
 ## PCA Visualizations
 
